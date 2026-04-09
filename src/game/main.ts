@@ -6,15 +6,24 @@ import { Preloader } from './scenes/Preloader';
 import { HubLabsScene } from './scenes/HubLabsScene';
 import { UIScene } from './scenes/overlays/UIScene';
 import { DialogueScene } from './scenes/overlays/DialogueScene';
+import { HubLabsBiologia } from './scenes/HubLabsBiologia';
 
 //  Find out more information about the Game Config at:
 //  https://docs.phaser.io/api-documentation/typedef/types-core#gameconfig
 const config: Phaser.Types.Core.GameConfig = {
     type: AUTO,
-    width: 1366,
-    height: 768,
-    parent: 'game-container',
+    parent: 'game-container', // Mantivemos o seu ID original
     backgroundColor: '#028af8',
+    
+    // --- MUDANÇA AQUI ---
+    scale: {
+        mode: Phaser.Scale.RESIZE,
+        width: '100%',
+        height: '100%'
+    },
+    // -------------------
+
+    //temos que inicar as cenas aqui para fazer funcionar
     scene: [
         Boot,
         Preloader,        
@@ -22,14 +31,13 @@ const config: Phaser.Types.Core.GameConfig = {
         MainGame,
         GameOver,
         HubLabsScene,
+        HubLabsBiologia,
         DialogueScene
     ]
 }; 
 
 const StartGame = (parent: string) => {
-
     return new Game({ ...config, parent });
-
 }
 
 export default StartGame;

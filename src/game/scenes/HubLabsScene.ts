@@ -190,12 +190,15 @@ export class HubLabsScene extends Scene {
     }
 
     private selectActiveLab() {
-        // Transição para a cena do jogo baseada no laboratório ativo
-        const labName = this.cards[this.currentIndex].getData('name');
-        if (labName === 'Biologia' || labName === 'Física' || labName === 'Química') {
-            this.scene.start('Game');
-        } else {
-            console.log(`${labName} em desenvolvimento!`);
-        }
+    const labName = this.cards[this.currentIndex].getData('name');
+    
+    if (labName === 'Biologia') {
+        // Agora vai para a cena correta da trilha de biologia
+        this.scene.start('HubLabsBiologia'); 
+    } else if (labName === 'Física' || labName === 'Química') {
+        this.scene.start('Game');
+    } else {
+        console.log(`${labName} em desenvolvimento!`);
     }
+}
 }

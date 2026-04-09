@@ -43,10 +43,10 @@ export class Preloader extends Scene {
         // Evento de progresso
         this.load.on('progress', (progress: number) => {
             this.progressBar.clear();
-            
+
             // Cor principal (Rosa do seu botão de Sair para manter a paleta)
             this.progressBar.fillStyle(0xff69b4, 1);
-            
+
             // Largura mínima para o arredondamento não quebrar no início
             const currentWidth = Math.max(barHeight, barWidth * progress);
             this.progressBar.fillRoundedRect(x, y, currentWidth, barHeight, radius);
@@ -63,7 +63,8 @@ export class Preloader extends Scene {
         this.load.image('logo', 'logo.png');
         this.load.image('Logo', 'logos/Logo.png');
         this.load.image('backgrounds/menu-laboratorio', 'backgrounds/menu-laboratorio.png');
-
+        this.load.image('balao-exclamacao', 'ui/balao-exclamacao.png');
+        
         // Labs
         this.load.image('labs/quimica', 'labs/quimica.png');
         this.load.image('labs/fisica', 'labs/fisica.png');
@@ -71,8 +72,12 @@ export class Preloader extends Scene {
         this.load.image('labs/odonto', 'labs/odonto.png');
         this.load.image('labs/medicina', 'labs/medicina.png');
         this.load.image('labs/ia', 'labs/ia.png');
-        
+
         this.load.image('objects/microscopio', 'objects/microscopio.png');
+
+        //carregando os sprits dos personagens
+        this.load.image('julia', 'characters/julia/julia-scene-pensitive.png'); // Ajuste o nome/caminho se necessário
+        this.load.image('pasteur', 'characters/pasteur/pasteur-normal.png');
 
         // Diálogos
         this.load.json('tutorial-script', 'dialogues/tutorial-sistema.json');

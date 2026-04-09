@@ -5,7 +5,10 @@ export class UIScene extends Scene {
     private headerTitle!: GameObjects.Text;
     private exitText!: GameObjects.Text;
     private logoImg!: GameObjects.Image;
-    private controlsText!: GameObjects.Text; // Nova variável para as instruções
+    private controlsText!: GameObjects.Text; 
+    
+    // Nova variável para ser a área clicável do botão
+    private exitButtonZone!: GameObjects.Zone; 
 
     private readonly COLORS = {
         backgroundBlue: 0x87ceeb,
@@ -36,13 +39,22 @@ export class UIScene extends Scene {
             color: '#ffffff'
         }).setOrigin(0.5);
 
-        // Criando o texto de instruções do rodapé
         this.controlsText = this.add.text(0, 0, 'USE AS SETAS ⬅️ ➡️ PARA NAVEGAR  •  ENTER PARA SELECIONAR', {
             fontFamily: 'Fredoka',
             fontSize: '16px',
             color: '#3d3d3d',
             align: 'center'
         }).setOrigin(0.5);
+
+        // --- NOVO: CRIANDO A ZONA INTERATIVA ---
+        // Cria uma zona invisível e ativa o cursor de "mãozinha" ao passar o mouse
+        this.exitButtonZone = this.add.zone(0, 0, 1, 1).setInteractive({ useHandCursor: true });
+        
+        // Adiciona a ação de clique
+        this.exitButtonZone.on('pointerdown', () => {
+            // Recarrega a página inteira (F5 no navegador)
+            window.location.reload(); 
+        });
 
         this.drawUI();
 
@@ -105,5 +117,10 @@ export class UIScene extends Scene {
 
         this.exitText.setPosition(btnX, btnY);
         this.exitText.setFontSize(Math.min(btnH * 0.4, 18));
+
+        // --- NOVO: POSICIONANDO A ZONA INTERATIVA ---
+        // A zona acompanha dinamicamente o tamanho e a posição que o botão foi desenhado
+        this.exitButtonZone.setPosition(btnX, btnY);
+        this.exitButtonZone.setSize(btnW, btnH);
     }
 }

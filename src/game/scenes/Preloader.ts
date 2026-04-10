@@ -64,7 +64,7 @@ export class Preloader extends Scene {
         this.load.image('Logo', 'logos/Logo.png');
         this.load.image('backgrounds/menu-laboratorio', 'backgrounds/menu-laboratorio.png');
         this.load.image('balao-exclamacao', 'ui/balao-exclamacao.png');
-        
+
         // Labs
         this.load.image('labs/quimica', 'labs/quimica.png');
         this.load.image('labs/fisica', 'labs/fisica.png');
@@ -77,14 +77,18 @@ export class Preloader extends Scene {
 
         //carregando os sprits dos personagens
         this.load.image('julia', 'characters/julia/julia-scene-pensitive.png'); // Ajuste o nome/caminho se necessário
+       
         this.load.image('pasteur', 'characters/pasteur/pasteur-normal.png');
-
+        
         // Diálogos
         this.load.json('tutorial-script', 'dialogues/tutorial-sistema.json');
-
+        this.load.json('biologia-intro-script', 'dialogues/biologia-intro.json');
+        
         // Portraits
         this.load.image('characters/julia/julia-portrait.png', 'characters/julia/julia-portrait.png');
         this.load.image('characters/pasteur/pasteur-portrait.png', 'characters/pasteur/pasteur-portrait.png');
+        //teste
+        this.load.image('characters/julia/julia-feliz.png', 'characters/julia/julia-feliz.png'); 
 
         // Sons
         this.load.audio('click', 'sounds/click.wav');

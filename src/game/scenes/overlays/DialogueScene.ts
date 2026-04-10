@@ -100,12 +100,26 @@ export class DialogueScene extends Phaser.Scene {
         });
     }
 
-    private showNode(nodeKey: string) {
+   private showNode(nodeKey: string) {
         if (nodeKey === 'end' || !this.script.nodes[nodeKey]) return this.end();
 
         const node = this.script.nodes[nodeKey];
         const isLeft = node.speaker === 'left';
         
+        // =======================================================
+        // NOVO: SISTEMA DE TROCA DE EXPRESSÃO (SPRITE)
+        // Se o JSON tiver a propriedade "changeTexture", ele troca a imagem
+        // =======================================================
+        if (node.changeTexture) {
+            if (isLeft) {
+                // setTexture é o comando do Phaser para trocar a imagem de um objeto que já existe na tela
+                this.spriteLeft.setTexture(node.changeTexture); 
+            } else {
+                this.spriteRight.setTexture(node.changeTexture);
+            }
+        }
+        // =======================================================
+
         // Destaque visual (Tint)
         this.spriteLeft.setTint(isLeft ? 0xFFFFFF : 0x888888);
         this.spriteRight.setTint(isLeft ? 0x888888 : 0xFFFFFF);
@@ -183,28 +197,51 @@ export class DialogueScene extends Phaser.Scene {
         const { width, height } = this.cameras.main;
         const fontSize = `${Math.round(height * 0.028)}px`;
 
+        // Queremos centralizar o bloco inteiro de botões na tela.
+        // Primeiro, vamos calcular onde é o meio exato entre os bonecos
+        const centerX = width / 2;
+        
+        // Vamos colocar os botões um pouco acima da caixa de diálogo
+        // A caixa de diálogo começa em height * 0.72. Vamos colocar os botões centrados perto dos 45% da altura
+        const startY = height * 0.45; 
+
         choices.forEach((choice, i) => {
             const txt = this.add.text(0, 0, choice.text, { 
                 fontFamily: 'Fredoka', fontSize: fontSize, color: '#FFF', fontStyle: 'bold' 
             });
 
-            const btnWidth = Math.max(width * 0.25, txt.width + 40);
+            // Cria um padding dinâmico para os botões não ficarem muito espremidos
+            const btnWidth = Math.max(width * 0.25, txt.width + 60); 
             const btnHeight = height * 0.07;
+            const espacamentoVertical = 20; // Espaço entre um botão e outro
 
             const bg = this.add.graphics();
             bg.fillStyle(0xFF69B4).fillRoundedRect(-btnWidth / 2, -btnHeight / 2, btnWidth, btnHeight, btnHeight / 2);
             bg.lineStyle(3, 0xD1478E).strokeRoundedRect(-btnWidth / 2, -btnHeight / 2, btnWidth, btnHeight, btnHeight / 2);
 
-            // Posicionamento vertical (empilhados)
-            const container = this.add.container(width * 0.75, (height * 0.3) + (i * (btnHeight + 15)));
+            // Posicionamento no CENTRO da tela (centerX)
+            // Calculamos o Y para empilhar os botões a partir do startY
+            const btnY = startY + (i * (btnHeight + espacamentoVertical));
+
+            // container com depth alto para garantir que fique acima de tudo
+            const container = this.add.container(centerX, btnY);
             container.add([bg, txt.setOrigin(0.5)]);
+            container.setDepth(20); 
             
+            // Adiciona a interatividade
             container.setSize(btnWidth, btnHeight);
             container.setInteractive({ useHandCursor: true })
+                     .on('pointerover', () => bg.setAlpha(0.8)) // Feedback visual extra ao passar o mouse
+                     .on('pointerout', () => bg.setAlpha(1))
                      .on('pointerdown', () => this.showNode(choice.target));
 
             this.choiceButtons.push(container);
         });
+        
+        // Ajuste opcional: Se houverem muitas escolhas (ex: 3 ou 4), o bloco pode ficar desalinhado.
+        // Se quiser que o bloco todo fique centralizado no meio independente de quantas escolhas tenham, 
+        // a matemática seria puxar todos um pouco para cima baseado no número total de botões.
+        // Mas para 2 opções, o cálculo acima já fica visualmente muito bom!
     }
 
     private clearChoices() {

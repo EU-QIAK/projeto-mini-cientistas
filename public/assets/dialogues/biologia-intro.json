@@ -2,11 +2,11 @@
     "actors": {
         "left": {
             "name": "Júlia",
-            "texture": "assets/characters/julia/julia-portrait.png"
+            "texture": "characters/julia/julia-portrait.png"
         },
         "right": {
             "name": "Pasteur",
-            "texture": "assets/characters/pasteur/pasteur-portrait.png"
+            "texture": "characters/pasteur/pasteur-portrait.png"
         }
     },
     "nodes": {
@@ -23,8 +23,9 @@
                 { "text": "NÃO...", "target": "resp_nao" }
             ]
         },
-        "resp_sim": {
+       "resp_sim": {
             "speaker": "left",
+            "changeTexture": "characters/julia/julia-feliz.png", 
             "text": "Nossa, que incrível! Eu adoraria vê-los!",
             "next": "final_sim"
         },
@@ -35,7 +36,7 @@
         },
         "resp_nao": {
             "speaker": "left",
-            "text": "Ah... parece um pouco assustador. Tenho certeza?",
+            "text": "Ah... parece um pouco assustador. Tem certeza?",
             "next": "final_nao"
         },
         "final_nao": {

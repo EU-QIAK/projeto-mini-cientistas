@@ -104,7 +104,7 @@ export class HubLabsBiologia extends Scene {
             this.pasteurImg.disableInteractive(); 
 
             // 2. Pega o script (Use o nome do JSON que você quer tocar aqui)
-            const script = this.cache.json.get('tutorial-script'); 
+            const script = this.cache.json.get('biologia-intro-script'); 
 
             // 3. Pausa a cena da Biologia
             this.scene.pause();

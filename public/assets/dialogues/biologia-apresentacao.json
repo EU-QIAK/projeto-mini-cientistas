@@ -1,0 +1,66 @@
+{
+    "actors": {
+        "left": {
+            "name": "Julia",
+            "texture": "characters/julia/julia-portrait.png"
+        },
+        "right": {
+          "name": "Pasteur",
+            "texture": "characters/pasteur/pasteur-portrait.png"
+        }
+    },
+    "nodes": {
+        "start": {
+            "speaker": "right",
+            "text": "Atenção, cientista! Antes de começar, vou te mostrar nossa lista de estudos.",
+            "next": "lacto"
+        },
+        "lacto": {
+            "speaker": "right",
+            "text": "Este é o Lactobacillus. Ele mora no iogurte e ajuda sua barriga a funcionar bem. Ele é um Amigo!",
+            "changeTexture": "micro-Lactobacillus",
+            "next": "saccha"
+        },
+        "saccha": {
+            "speaker": "right",
+            "text": "Aqui temos o fungo Saccharomyces. Ele ajuda a fazer o pão crescer bem fofinho. Também é um Amigo!",
+            "changeTexture": "micro-cerevisiae",
+            "next": "penic"
+        },
+        "penic": {
+            "speaker": "right",
+            "text": "Este é o Penicillium. Você sabia que dele veio o primeiro antibiótico para curar doenças? Nosso Amigo!",
+            "changeTexture": "micro-Penicillium",
+            "next": "flu"
+        },
+        "flu": {
+            "speaker": "right",
+            "text": "Atenção agora! Este é o vírus Influenza. Ele adora causar gripes e resfriados. Cuidado com ele!",
+            "changeTexture": "micro-Influenza",
+            "next": "giardia"
+        },
+        "giardia": {
+            "speaker": "right",
+            "text": "Esta é a Giardia. Ela vive na água suja e dá uma baita dor de barriga. Mande para a caixa de Cuidado!",
+            "changeTexture": "micro-lamblia",
+            "next": "salmo"
+        },
+        "salmo": {
+            "speaker": "right",
+            "text": "Por fim, a Salmonella. Fica escondida em comidas cruas e causa intoxicação. Muito Cuidado!",
+            "changeTexture": "micro-Salmonella",
+            "next": "pre-final"
+        },
+        "pre-final": {
+            "speaker": "right",
+            "text": "agora vamos lá!!",
+            "changeTexture": "micro-Salmonella",
+            "next": "fim"
+        },
+        "fim": {
+            "speaker": "right",
+            "text": "Tudo pronto? O relógio vai correr rápido. Boa sorte!",
+            "next": "end"
+        }
+    }
+}

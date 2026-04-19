@@ -6,13 +6,20 @@ export class HubLabsBiologia extends Scene {
     // Containers para posicionamento responsivo e Imagens para animações
     private juliaContainer!: Phaser.GameObjects.Container;
     private juliaImg!: Phaser.GameObjects.Image;
+    // NOVOS ELEMENTOS DA JÚLIA
+    private juliaThoughtBalloon!: Phaser.GameObjects.Image;
+    private juliaThoughtText!: Phaser.GameObjects.Text;
 
     private pasteurContainer!: Phaser.GameObjects.Container;
     private pasteurImg!: Phaser.GameObjects.Image;
-    private exclamationBalloon!: Phaser.GameObjects.Image; // Nova variável para o balão
+    private exclamationBalloon!: Phaser.GameObjects.Image;
 
     private instructionText!: Phaser.GameObjects.Text;
     private textBgGraphics!: Phaser.GameObjects.Graphics;
+
+    // Variáveis para guardar as posições finais calculadas pelo drawLayout
+    private finalJuliaX = 0;
+    private finalPasteurX = 0;
 
     constructor() {
         super('HubLabsBiologia');
@@ -27,24 +34,38 @@ export class HubLabsBiologia extends Scene {
 
         // 2. Criação dos Elementos
 
-        // Júlia (Totalmente visível, sem transparência)
+        // --- JÚLIA E SEUS BALÕES ---
         this.juliaImg = this.add.image(0, 0, 'julia').setOrigin(0.5, 1);
-        this.juliaContainer = this.add.container(0, 0, [this.juliaImg]);
 
-        // Pasteur e Balão de Exclamação (Com destaque)
+        // NOVO: Criando o balão de pensamento da Júlia
+        this.juliaThoughtBalloon = this.add.image(0, 0, 'balao-pensamento').setOrigin(0.5, 1);
+
+        // NOVO: Criando o texto de pensamento
+        this.juliaThoughtText = this.add.text(0, 0, 'quem sera ele?', {
+            fontFamily: 'Fredoka',
+            color: '#3d3d3d', // Mesma cor do texto de instrução
+            align: 'center',
+            fontStyle: 'italic'
+        }).setOrigin(0.5);
+
+        // Adicionando imagem, balão e texto ao container da Júlia
+        // A ordem importa: o que é adicionado por último fica na frente.
+        this.juliaContainer = this.add.container(0, 0, [this.juliaImg, this.juliaThoughtBalloon, this.juliaThoughtText]);
+
+
+        // --- PASTEUR E SEUS BALÕES ---
         this.pasteurImg = this.add.image(0, 0, 'pasteur').setOrigin(0.5, 1);
-        this.pasteurImg.postFX.addGlow(0xffdd00, 2, 0, false, 0.1, 12); // Brilho para destaque interativo
+        this.pasteurImg.postFX.addGlow(0xffdd00, 2, 0, false, 0.1, 12);
 
-        // Criando o balão de exclamação. Ancoramos pela base (pés) para facilitar o alinhamento sobre a cabeça
         this.exclamationBalloon = this.add.image(0, 0, 'balao-exclamacao').setOrigin(0.5, 1);
 
-        // Adicionando ambos ao container do Pasteur
         this.pasteurContainer = this.add.container(0, 0, [this.pasteurImg, this.exclamationBalloon]);
 
-        // Interação no Pasteur. O mouse detecta o contorno do personagem.
+        // Interação no Pasteur.
         this.pasteurImg.setInteractive({ cursor: 'pointer', pixelPerfect: true });
 
-        // Texto e Fundo
+
+        // --- TEXTO DE INSTRUÇÃO ---
         this.textBgGraphics = this.add.graphics();
         this.instructionText = this.add.text(0, 0, 'Clique no Louis Pasteur para começar a aventura!', {
             fontFamily: 'Fredoka',
@@ -52,78 +73,151 @@ export class HubLabsBiologia extends Scene {
             align: 'center'
         }).setOrigin(0.5);
 
-        // 3. Aplica o Layout Responsivo
+        // Esconde o texto inicialmente (aparecerá após a entrada dos personagens)
+        this.instructionText.setAlpha(0);
+        this.textBgGraphics.setAlpha(0);
+
+
+        // 3. Aplica o Layout Responsivo (Calcula as posições finais)
         this.drawLayout();
 
         // 4. Se a tela mudar de tamanho, recalcula tudo
         this.scale.on('resize', () => this.drawLayout());
 
-        // --- ANIMAÇÕES E INTERAÇÕES ---
 
-        // 1. NOVO EFEITO: Pulso Suave (Expandir/Desexpandir) no Container INTEIRO do Pasteur
-        // Isso fará o Pasteur e o Balão expandirem juntos para um destaque responsivo.
+        // ==========================================
+        // --- NOVA LÓGICA DE ENTRADA (MÁGICA) ---
+        // ==========================================
+
+        // 1. Configuração Inicial (Fora da tela e transparente)
+        // Júlia vem da esquerda
+        this.juliaContainer.setX(-width * 0.5).setAlpha(0);
+        // Pasteur vem da direita
+        this.pasteurContainer.setX(width * 1.5).setAlpha(0);
+
+        // 2. Tweens de Entrada (Fade-in + Slide-in)
+
+        // Entrada da Júlia
+        this.tweens.add({
+            targets: this.juliaContainer,
+            x: this.finalJuliaX, // Posição final calculada no drawLayout
+            alpha: 1,
+            duration: 1200,
+            ease: 'Cubic.easeOut' // Começa rápido, desacelera no final
+        });
+
+        // Entrada do Pasteur (com um pequeno atraso para não ser perfeitamente simétrico)
         this.tweens.add({
             targets: this.pasteurContainer,
-            scale: 1.12, // Cresce 12% suavemente
-            duration: 600, // Mais rápido que a respiração
-            yoyo: true,
-            repeat: -1,
-            ease: 'Sine.easeInOut' // Efeito suave de "pop"
+            x: this.finalPasteurX, // Posição final calculada no drawLayout
+            alpha: 1,
+            duration: 1200,
+            delay: 300, // Atraso de 300ms
+            ease: 'Cubic.easeOut',
+            onComplete: () => {
+                // SÓ INICIA AS OUTRAS ANIMAÇÕES QUANDO A ENTRADA TERMINAR
+                this.startSceneAnimations();
+            }
         });
 
-        // 2. NOVO EFEITO: Bounce Contínuo apenas no Balão de Exclamação
+        // --- INTERAÇÕES DO PASTEUR (Mantidas) ---
+        this.pasteurImg.on('pointerover', () => this.pasteurImg.setTint(0xffffff));
+        this.pasteurImg.on('pointerout', () => this.pasteurImg.clearTint());
+
+        this.pasteurImg.on('pointerdown', () => {
+            this.pasteurImg.disableInteractive();
+
+            const scriptIntro = this.cache.json.get('biologia-intro-script');
+
+            this.scene.pause();
+
+            this.scene.launch('DialogueScene', {
+                script: scriptIntro,
+                parentScene: 'HubLabsBiologia',
+                onComplete: () => {
+                    console.log("Diálogo 1 acabou! Fechando cena de diálogo...");
+
+                    // 1. GARANTE QUE A CENA FECHOU TOTALMENTE
+                    this.scene.stop('DialogueScene');
+
+                    // 2. Dá um respiro de 0.2 segundos (200ms) antes de abrir a próxima
+                    this.time.delayedCall(200, () => {
+
+                        const scriptApresentacao = this.cache.json.get('biologia-apresentacao');
+
+                        // Verifica se o JSON realmente carregou (se não, vai dar erro no F12)
+                        if (!scriptApresentacao) {
+                            console.error("ERRO: O arquivo biologia-apresentacao.json não foi encontrado!");
+                            return;
+                        }
+
+                        console.log("Iniciando Diálogo 2 (Apresentação)...");
+                        this.scene.launch('DialogueScene', {
+                            script: scriptApresentacao,
+                            parentScene: 'HubLabsBiologia',
+                            onComplete: () => {
+                                console.log("Apresentação acabou! Partiu jogo!");
+                                this.scene.stop('HubLabsBiologia');
+                                this.scene.start('BiologiaMinigame');
+                            }
+                        });
+
+                    }); // Fim do delay
+                }
+            });
+        });
+    }
+
+    /**
+     * Função para iniciar as animações contínuas da cena e o texto de instrução.
+     * Chamada apenas após a animação de entrada dos personagens terminar.
+     */
+    private startSceneAnimations() {
+        // 1. Aparecer o texto de instrução suavemente
         this.tweens.add({
-            targets: this.exclamationBalloon,
-            y: '-=15', // Sobe 15 pixels
-            duration: 400, // Rápido
-            yoyo: true,
-            repeat: -1,
-            ease: 'Bounce.easeOut' // Efeito de rebote
+            targets: [this.instructionText, this.textBgGraphics],
+            alpha: { from: 0, to: 1 },
+            duration: 900
         });
 
-        // 3. EFEITO DE RESPIRAÇÃO: Sobe e desce levemente (Mantido para dar vida à cena)
+        // 2. Efeito Suave de Pulso no Container INTEIRO do Pasteur
         this.tweens.add({
-            targets: [this.juliaImg, this.pasteurImg],
-            y: 10, // Sobe 10 pixels relativo ao container
-            duration: 2000,
+            targets: this.pasteurContainer,
+            scale: 1.12,
+            duration: 600,
             yoyo: true,
             repeat: -1,
             ease: 'Sine.easeInOut'
         });
 
-        // 4. INTERAÇÕES DO PASTEUR: Muda a cor ao passar o mouse e inicia o diálogo ao clicar
-        this.pasteurImg.on('pointerover', () => this.pasteurImg.setTint(0xffffff));
-        this.pasteurImg.on('pointerout', () => this.pasteurImg.clearTint());
-       // INTERAÇÕES DO PASTEUR
-        this.pasteurImg.on('pointerover', () => this.pasteurImg.setTint(0xffffff));
-        this.pasteurImg.on('pointerout', () => this.pasteurImg.clearTint());
-        
-        // --- CÓDIGO CORRIGIDO BASEADO NO SEU GAME.TS ---
-        this.pasteurImg.on('pointerdown', () => {
-            // 1. Desativa a interação para o jogador não dar 2 cliques rápidos e travar
-            this.pasteurImg.disableInteractive(); 
+        // 3. Bounce Contínuo no Balão de Exclamação (Brock)
+        this.tweens.add({
+            targets: this.exclamationBalloon,
+            y: '-=15',
+            duration: 400,
+            yoyo: true,
+            repeat: -1,
+            ease: 'Bounce.easeOut'
+        });
 
-            // 2. Pega o script (Use o nome do JSON que você quer tocar aqui)
-            const script = this.cache.json.get('biologia-intro-script'); 
+        // 4. NOVO: Bounce Contínuo no Balão de Pensamento da Júlia
+        this.tweens.add({
+            targets: [this.juliaThoughtBalloon, this.juliaThoughtText],
+            y: '-=10', // Sobe um pouco menos que o de exclamação
+            duration: 600, // Um pouco mais lento e suave
+            yoyo: true,
+            repeat: -1,
+            ease: 'Sine.easeInOut' // Movimento mais "leve" para pensamento
+        });
 
-            // 3. Pausa a cena da Biologia
-            this.scene.pause();
-
-            // 4. Lança o Diálogo passando a "bagagem" que ele exige para funcionar
-            this.scene.launch('DialogueScene', { 
-                script: script, 
-                parentScene: 'HubLabsBiologia', 
-                onComplete: () => {
-                    console.log("Diálogo do Pasteur concluído!");
-                    
-                    // Quando o diálogo acabar, despausa a tela e devolve o clique
-                    this.scene.resume('HubLabsBiologia');
-                    this.pasteurImg.setInteractive({ cursor: 'pointer', pixelPerfect: true });
-                    
-                    // OU, se quiser ir direto para o jogo após a conversa, descomente a linha abaixo:
-                    // this.scene.start('NomeDaSuaCenaDoMiniGame'); 
-                }
-            });
+        // 5. Efeito de Respiração (Júlia e Pasteur sobem/descem)
+        this.tweens.add({
+            targets: [this.juliaImg, this.pasteurImg],
+            y: 10,
+            duration: 2000,
+            yoyo: true,
+            repeat: -1,
+            ease: 'Sine.easeInOut'
         });
     }
 
@@ -137,42 +231,62 @@ export class HubLabsBiologia extends Scene {
         const topUI = height * 0.14;
         const bottomUI = height * 0.09;
         const safeHeight = height - topUI - bottomUI;
-        const safeY = topUI; 
+        const safeY = topUI;
 
         // ==========================================
         // ESTILO POKÉMON: PERSPECTIVA E ESCALA
         // ==========================================
-        const baseCharHeight = safeHeight * 0.45; // Altura média de referência
+        const baseCharHeight = safeHeight * 0.45;
 
-        // 1. PASTEUR (Brock - Fundo Direita) -> MANTIDO INTACTO
+        // 1. PASTEUR (Brock - Fundo Direita)
         const pasteurTargetHeight = baseCharHeight * 0.95;
         const pasteurScale = pasteurTargetHeight / this.pasteurImg.height;
-        this.pasteurImg.setScale(pasteurScale); 
+        this.pasteurImg.setScale(pasteurScale);
 
-        const pasteurFloorY = safeY + (safeHeight * 0.85); 
-        this.pasteurContainer.setPosition(width * 0.75, pasteurFloorY);
+        const pasteurFloorY = safeY + (safeHeight * 0.85);
+        //this.pasteurContainer.setPosition(width * 0.75, pasteurFloorY); // Não setamos a posição direta mais
+        this.finalPasteurX = width * 0.75; // Guardamos o X final para a tween
+        this.pasteurContainer.y = pasteurFloorY; // O Y pode ser fixo
 
-        // 2. JÚLIA (Red - Frente Esquerda) -> AJUSTADA
-        // Um pouco menor que antes para não estourar a tela, mas ainda claramente na frente
-        const juliaTargetHeight = baseCharHeight * 1.85; 
+        // 2. JÚLIA (Red - Frente Esquerda)
+        const juliaTargetHeight = baseCharHeight * 1.85;
         const juliaScale = juliaTargetHeight / this.juliaImg.height;
         this.juliaImg.setScale(juliaScale);
 
-        // Colada na base da área segura (100%) e mais no canto esquerdo (15%)
-        const juliaFloorY = safeY + safeHeight; 
-        this.juliaContainer.setPosition(width * 0.25, juliaFloorY);
+        const juliaFloorY = safeY + safeHeight;
+        //this.juliaContainer.setPosition(width * 0.25, juliaFloorY); // Não setamos a posição direta mais
+        this.finalJuliaX = width * 0.25; // Guardamos o X final para a tween
+        this.juliaContainer.y = juliaFloorY; // O Y pode ser fixo
 
         // ==========================================
-        // BALÃO DO PASTEUR
+        // BALÕES E TEXTOS
         // ==========================================
-        this.exclamationBalloon.y = -pasteurTargetHeight - 15; 
-        const balloonScale = (pasteurTargetHeight * 0.25) / this.exclamationBalloon.height;
-        this.exclamationBalloon.setScale(balloonScale);
+
+        // Balão do Pasteur (Exclamação)
+        this.exclamationBalloon.y = -pasteurTargetHeight - 15;
+        const balloonExScale = (pasteurTargetHeight * 0.40) / this.exclamationBalloon.height;
+        this.exclamationBalloon.setScale(balloonExScale);
+
+        // NOVO: Balão da Júlia (Pensamento)
+        this.juliaThoughtBalloon.y = -juliaTargetHeight + 80;
+
+        // ---> ESSA É A LINHA QUE EMPURRA PARA A ESQUERDA <---
+        this.juliaThoughtBalloon.x = -juliaTargetHeight * 0.30;
+
+        const balloonThScale = (juliaTargetHeight * 0.35) / this.juliaThoughtBalloon.height;
+        this.juliaThoughtBalloon.setScale(balloonThScale);
+
+        // NOVO: Texto dentro do balão da Júlia
+        this.juliaThoughtText.setPosition(
+            this.juliaThoughtBalloon.x,
+            this.juliaThoughtBalloon.y - (this.juliaThoughtBalloon.displayHeight * 0.55)
+        );
+        this.juliaThoughtText.setFontSize(Math.min(safeHeight * 0.05, 24));
 
         // ==========================================
-        // TEXTO DE INSTRUÇÃO
+        // TEXTO DE INSTRUÇÃO (Mantido)
         // ==========================================
-        const textY = safeY + (safeHeight * 0.10); 
+        const textY = safeY + (safeHeight * 0.10);
         this.instructionText.setPosition(width / 2, textY);
         this.instructionText.setFontSize(Math.min(safeHeight * 0.08, 32));
 
@@ -189,7 +303,7 @@ export class HubLabsBiologia extends Scene {
             this.instructionText.y - (bgH / 2),
             bgW,
             bgH,
-            bgH / 2 
+            bgH / 2
         );
     }
 }

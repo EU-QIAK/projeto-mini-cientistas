@@ -12,7 +12,7 @@ export class Preloader extends Scene {
         const { width, height } = this.scale;
 
         // Fundo (usando a logo ou um fundo neutro carregado no Boot)
-        this.add.image(width / 2, height / 2, 'background').setDisplaySize(width, height);
+        this.add.image(width, height, 'background').setDisplaySize(width, height);
 
         // Configurações da barra
         const barWidth = 400;
@@ -63,7 +63,10 @@ export class Preloader extends Scene {
         this.load.image('logo', 'logo.png');
         this.load.image('Logo', 'logos/Logo.png');
         this.load.image('backgrounds/menu-laboratorio', 'backgrounds/menu-laboratorio.png');
+        this.load.image('background BiologiaMinigame', 'backgrounds/fundo-Biologia minigame.png');
+
         this.load.image('balao-exclamacao', 'ui/balao-exclamacao.png');
+        this.load.image('balao-pensamento', 'ui/balao-pensamento.png');
 
         // Labs
         this.load.image('labs/quimica', 'labs/quimica.png');
@@ -75,20 +78,29 @@ export class Preloader extends Scene {
 
         this.load.image('objects/microscopio', 'objects/microscopio.png');
 
+        //microbios do jogo de Biologia
+        this.load.image('micro-lamblia', 'objects/microbios/Giardia lamblia.png');
+        this.load.image('micro-Influenza', 'objects/microbios/Influenza.png');
+        this.load.image('micro-Lactobacillus', 'objects/microbios/Lactobacillus.png');
+        this.load.image('micro-Penicillium', 'objects/microbios/Penicillium.png');
+        this.load.image('micro-cerevisiae', 'objects/microbios/Saccharomyces cerevisiae.png');
+        this.load.image('micro-Salmonella', 'objects/microbios/Salmonella.png');
+
+
         //carregando os sprits dos personagens
         this.load.image('julia', 'characters/julia/julia-scene-pensitive.png'); // Ajuste o nome/caminho se necessário
-       
         this.load.image('pasteur', 'characters/pasteur/pasteur-normal.png');
-        
+
         // Diálogos
         this.load.json('tutorial-script', 'dialogues/tutorial-sistema.json');
         this.load.json('biologia-intro-script', 'dialogues/biologia-intro.json');
-        
+        this.load.json('biologia-apresentacao', 'dialogues/biologia-apresentacao.json');
+
         // Portraits
         this.load.image('characters/julia/julia-portrait.png', 'characters/julia/julia-portrait.png');
         this.load.image('characters/pasteur/pasteur-portrait.png', 'characters/pasteur/pasteur-portrait.png');
         //teste
-        this.load.image('characters/julia/julia-feliz.png', 'characters/julia/julia-feliz.png'); 
+        this.load.image('characters/julia/julia-feliz.png', 'characters/julia/julia-feliz.png');
 
         // Sons
         this.load.audio('click', 'sounds/click.wav');

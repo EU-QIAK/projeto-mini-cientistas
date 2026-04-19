@@ -7,6 +7,8 @@ import { HubLabsScene } from './scenes/HubLabsScene';
 import { UIScene } from './scenes/overlays/UIScene';
 import { DialogueScene } from './scenes/overlays/DialogueScene';
 import { HubLabsBiologia } from './scenes/HubLabsBiologia';
+import { BiologiaMinigame } from './scenes/games/BiologiaMinigame';
+import { UIBiologia } from './scenes/overlays/UIBiologia';
 
 //  Find out more information about the Game Config at:
 //  https://docs.phaser.io/api-documentation/typedef/types-core#gameconfig
@@ -32,6 +34,8 @@ const config: Phaser.Types.Core.GameConfig = {
         GameOver,
         HubLabsScene,
         HubLabsBiologia,
+        BiologiaMinigame,
+        UIBiologia,
         DialogueScene
     ]
 }; 

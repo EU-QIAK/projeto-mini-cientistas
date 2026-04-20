@@ -2,9 +2,9 @@ import { Scene } from 'phaser';
 
 export class HubLabsScene extends Scene {
     private labsCards = [
+        { name: 'Biologia', image: 'labs/biologia' },     // <--- Agora é o primeiro!
         { name: 'Química', image: 'labs/quimica' },
         { name: 'Física', image: 'labs/fisica' },
-        { name: 'Biologia', image: 'labs/biologia' },
         { name: 'Odontologia', image: 'labs/odonto' },
         { name: 'Medicina', image: 'labs/medicina' },
         { name: 'Inteligência Artificial', image: 'labs/ia' }
@@ -45,9 +45,12 @@ export class HubLabsScene extends Scene {
         this.setupCarousel();
         this.setupControls();
         this.updateCarousel(false);
-        
+
         // Cria a interface do Popup (invisível no começo)
         this.createPopupUI();
+
+        // NOVO: Adiciona as setas indicativas do carrossel
+        this.createArrows();
     }
 
     private setupCarousel() {
@@ -62,18 +65,28 @@ export class HubLabsScene extends Scene {
             const card = this.add.container(xPos, 0);
 
             const img = this.add.image(0, 0, lab.image).setScale(0.7).setAlpha(0.8);
-            
+
             const nameText = this.add.text(0, 0, lab.name, {
-                fontSize: '18px',
+                fontSize: '26px',
                 color: '#3d3d3d',
                 fontFamily: 'Fredoka'
             }).setOrigin(0.5);
 
+            // --- FUNDO DA TAG MODIFICADO ---
             const textWidth = nameText.getBounds().width;
-            const bgWidth = textWidth + 40;
-            const bgHeight = 35;
+
+            // 1. LARGURA
+            const bgWidth = textWidth + 90;
+
+            // 2. ALTURA
+            const bgHeight = 85;
+
             const radius = bgHeight / 2;
-            const tagY = 210;
+
+            // MUDEI AQUI: Agora a tag usa a mesma altura que as setas (75% da tela)
+            // IMPORTANTE: Como o container principal já está centralizado (height/2),
+            // nós precisamos calcular a diferença para descer a tag pro lugar certo.
+            const tagY = (this.scale.height * 0.77) - (this.scale.height / 2);
 
             const tagContainer = this.add.container(0, tagY);
             const nameBg = this.add.graphics();
@@ -94,7 +107,7 @@ export class HubLabsScene extends Scene {
         });
     }
 
-    private updateCarousel(animate = true) {
+  private updateCarousel(animate = true) {
         if (this.isAnimating) return;
 
         const targetX = (this.scale.width / 2) - (this.currentIndex * this.cardWidth);
@@ -124,17 +137,24 @@ export class HubLabsScene extends Scene {
             this.tweens.killTweensOf(tagGroup);
 
             if (isActive) {
+                // --- ATIVO: Fica Grande, Opaco e Parado ---
                 this.tweens.add({
                     targets: img,
-                    scale: { from: 0.85, to: 0.75 },
+                    scale: 0.9, // <--- Maior que os outros! (Ajuste esse número se quiser ainda maior)
                     alpha: 1,
-                    duration: 1000,
-                    yoyo: true,
-                    repeat: -1
+                    duration: 400,
+                    ease: 'Power2'
                 });
                 this.tweens.add({ targets: tagGroup, alpha: 1, duration: 400 });
             } else {
-                img.setScale(0.6).setAlpha(0.6);
+                // --- INATIVO: Fica Pequeno e Semi-transparente ---
+                this.tweens.add({
+                    targets: img,
+                    scale: 0.55, // <--- Menor que o principal
+                    alpha: 0.5,  // <--- Mais apagadinho
+                    duration: 400,
+                    ease: 'Power2'
+                });
                 this.tweens.add({ targets: tagGroup, alpha: 0, duration: 200 });
             }
         });
@@ -193,7 +213,7 @@ export class HubLabsScene extends Scene {
         this.isPopupOpen = true;
 
         const labName = this.cards[this.currentIndex].getData('name');
-        
+
         // Atualiza o texto do popup com o nome do laboratório escolhido
         this.popupText.setText(`Deseja iniciar a aventura no\nLaboratório de ${labName}?`);
 
@@ -211,15 +231,15 @@ export class HubLabsScene extends Scene {
     // --- NOVA FUNÇÃO: O Código antigo de transição veio parar aqui ---
     private confirmLabAccess() {
         const labName = this.cards[this.currentIndex].getData('name');
-        
+
         if (labName === 'Biologia') {
-            this.scene.start('HubLabsBiologia'); 
+            this.scene.start('HubLabsBiologia');
         } else if (labName === 'Física' || labName === 'Química') {
             this.scene.start('Game');
         } else {
             console.log(`${labName} em desenvolvimento!`);
             // Se estiver em desenvolvimento, apenas fecha o popup
-            this.closePopup(); 
+            this.closePopup();
         }
     }
 
@@ -240,7 +260,7 @@ export class HubLabsScene extends Scene {
     // --- NOVA FUNÇÃO: Desenha toda a interface do Popup ---
     private createPopupUI() {
         const { width, height } = this.scale;
-        
+
         this.popupContainer = this.add.container(width / 2, height / 2);
         this.popupContainer.setDepth(100);
 
@@ -249,7 +269,7 @@ export class HubLabsScene extends Scene {
         overlay.fillStyle(0x000000, 0.7);
         overlay.fillRect(-width / 2, -height / 2, width, height);
         // Intercepta cliques para não vazarem para o carrossel
-        overlay.setInteractive(new Phaser.Geom.Rectangle(-width/2, -height/2, width, height), Phaser.Geom.Rectangle.Contains);
+        overlay.setInteractive(new Phaser.Geom.Rectangle(-width / 2, -height / 2, width, height), Phaser.Geom.Rectangle.Contains);
 
         // Fundo branco do Popup
         const boxWidth = 450;
@@ -274,7 +294,7 @@ export class HubLabsScene extends Scene {
         const btnSimBg = this.add.graphics();
         btnSimBg.fillStyle(0x28a745, 1); // Verde sucesso
         btnSimBg.fillRoundedRect(-180, 50, 150, 50, 15);
-        
+
         const btnSimText = this.add.text(-105, 75, 'SIM, VAMOS!', {
             fontFamily: 'Fredoka', fontSize: '20px', color: '#ffffff', fontStyle: 'bold'
         }).setOrigin(0.5);
@@ -286,7 +306,7 @@ export class HubLabsScene extends Scene {
         const btnNaoBg = this.add.graphics();
         btnNaoBg.fillStyle(0x6c757d, 1); // Cinza
         btnNaoBg.fillRoundedRect(30, 50, 150, 50, 15);
-        
+
         const btnNaoText = this.add.text(105, 75, 'AGORA NÃO', {
             fontFamily: 'Fredoka', fontSize: '20px', color: '#ffffff', fontStyle: 'bold'
         }).setOrigin(0.5);
@@ -296,8 +316,56 @@ export class HubLabsScene extends Scene {
 
         // Adiciona tudo ao container principal
         this.popupContainer.add([overlay, box, titleText, this.popupText, btnSimBg, btnSimText, btnSimZone, btnNaoBg, btnNaoText, btnNaoZone]);
-        
+
         // Esconde o popup no início
         this.popupContainer.setActive(false).setVisible(false);
+    }
+
+    // --- NOVA FUNÇÃO: SETAS ANIMADAS DO CARROSSEL ---
+    private createArrows() {
+        const { width, height } = this.scale;
+
+        // Posição vertical na parte de baixo (85% da tela)
+        const arrowY = height * 0.77;
+
+        // --- Seta Esquerda ---
+        const leftArrow = this.add.image(width * 0.15, arrowY, 'seta-esquerda')
+            .setInteractive({ useHandCursor: true })
+            .setDepth(50)
+            .setScale(0.35); // <--- MUDEI AQUI: Diminui a seta para 60% do tamanho
+
+        // --- Seta Direita ---
+        const rightArrow = this.add.image(width * 0.85, arrowY, 'seta-direita')
+            .setInteractive({ useHandCursor: true })
+            .setDepth(50)
+            .setScale(0.35); // <--- MUDEI AQUI: Diminui a seta para 60% do tamanho
+
+        // --- Eventos de Clique ---
+        leftArrow.on('pointerdown', () => {
+            if (!this.isPopupOpen) this.move(-1);
+        });
+
+        rightArrow.on('pointerdown', () => {
+            if (!this.isPopupOpen) this.move(1);
+        });
+
+        // --- Animação (Tween) para chamar atenção ---
+        this.tweens.add({
+            targets: leftArrow,
+            x: '-=20', // Move 10 pixels pra esquerda
+            duration: 800,
+            yoyo: true,
+            repeat: -1,
+            ease: 'Sine.easeInOut'
+        });
+
+        this.tweens.add({
+            targets: rightArrow,
+            x: '+=20', // Move 10 pixels pra direita
+            duration: 800,
+            yoyo: true,
+            repeat: -1,
+            ease: 'Sine.easeInOut'
+        });
     }
 }

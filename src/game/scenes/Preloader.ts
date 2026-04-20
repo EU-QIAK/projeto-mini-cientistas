@@ -65,8 +65,11 @@ export class Preloader extends Scene {
         this.load.image('backgrounds/menu-laboratorio', 'backgrounds/menu-laboratorio.png');
         this.load.image('background BiologiaMinigame', 'backgrounds/fundo-Biologia minigame.png');
 
+        //UI
         this.load.image('balao-exclamacao', 'ui/balao-exclamacao.png');
         this.load.image('balao-pensamento', 'ui/balao-pensamento.png');
+        this.load.image('seta-esquerda', 'ui/seta-esquerda.png');
+        this.load.image('seta-direita', 'ui/seta-direita.png');
 
         // Labs
         this.load.image('labs/quimica', 'labs/quimica.png');

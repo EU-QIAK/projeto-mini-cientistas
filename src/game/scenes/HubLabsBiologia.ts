@@ -239,11 +239,11 @@ export class HubLabsBiologia extends Scene {
         const baseCharHeight = safeHeight * 0.45;
 
         // 1. PASTEUR (Brock - Fundo Direita)
-        const pasteurTargetHeight = baseCharHeight * 0.95;
+        const pasteurTargetHeight = baseCharHeight * 1.2;
         const pasteurScale = pasteurTargetHeight / this.pasteurImg.height;
         this.pasteurImg.setScale(pasteurScale);
 
-        const pasteurFloorY = safeY + (safeHeight * 0.85);
+        const pasteurFloorY = safeY + (safeHeight * 0.90);
         //this.pasteurContainer.setPosition(width * 0.75, pasteurFloorY); // Não setamos a posição direta mais
         this.finalPasteurX = width * 0.75; // Guardamos o X final para a tween
         this.pasteurContainer.y = pasteurFloorY; // O Y pode ser fixo

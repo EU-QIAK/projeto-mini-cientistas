@@ -185,7 +185,7 @@ export class BiologiaMinigame extends Scene {
         this.drawInfoBox(0xffffff, 0x87ceeb);
 
         this.infoText = this.add.text(width / 2, panelY, 'O relógio está correndo! Classifique o máximo que conseguir!', {
-            fontFamily: 'Fredoka', fontSize: '18px', color: '#3d3d3d', align: 'center', wordWrap: { width: panelWidth * 0.9 }
+            fontFamily: 'Fredoka', fontSize: '26px', color: '#3d3d3d', align: 'center', wordWrap: { width: panelWidth * 0.9 }
         }).setOrigin(0.5);
 
         // --- SISTEMA DE RECORDE EM TEMPO REAL ---
@@ -197,13 +197,13 @@ export class BiologiaMinigame extends Scene {
         
         // Texto de Pontuação (Atual)
         this.scoreText = this.add.text(scoreX, scoreY, `🏆 Pontos: 0`, {
-            fontFamily: 'Fredoka', fontSize: '26px', color: '#e7e7e7', fontStyle: 'bold'
-        }).setOrigin(0, 0.5); 
+            fontFamily: 'Fredoka', fontSize: '36px', color: '#e7e7e7', fontStyle: 'bold'
+        }).setOrigin(0, 0.4); 
 
         // Novo Texto de Recorde (Abaixo da Pontuação)
         this.recordeText = this.add.text(scoreX, scoreY + 30, `🌟 Recorde: ${recordeAtual}`, {
-            fontFamily: 'Fredoka', fontSize: '18px', color: '#ffd700', fontStyle: 'bold' // Dourado!
-        }).setOrigin(0, 0.5);
+            fontFamily: 'Fredoka', fontSize: '28px', color: '#ffd700', fontStyle: 'bold' // Dourado!
+        }).setOrigin(0, 0.1);
     }
 
     private drawInfoBox(fillColor: number, lineColor: number) {

@@ -1,0 +1,45 @@
+{
+    "actors": {
+        "left": {
+            "name": "Júlia",
+            "texture": "characters/julia/julia-portrait.png"
+        },
+        "right": {
+            "name": "Pasteur",
+            "texture": "characters/pasteur/pasteur-portrait.png"
+        }
+    },
+    "nodes": {
+        "start": {
+            "speaker": "right",
+            "text": "Magnifique! Você tem um talento natural para a microbiologia, Júlia!",
+            "next": "julia_comemora"
+        },
+        "julia_comemora": {
+            "speaker": "left",
+            "changeTexture": "characters/julia/julia-feliz.png",
+            "text": "Ufa! Foi muito rápido, mas consegui classificar todos os microrganismos!",
+            "next": "pasteur_explica"
+        },
+        "pasteur_explica": {
+            "speaker": "right",
+            "text": "Graças a você, nosso laboratório está seguro. Os amigos estão trabalhando e os perigosos estão isolados.",
+            "next": "pasteur_licao"
+        },
+        "pasteur_licao": {
+            "speaker": "right",
+            "text": "Sempre lembre: lavar bem as mãos e comer alimentos bem cozidos nos protege dos invasores!",
+            "next": "julia_despedida"
+        },
+        "julia_despedida": {
+            "speaker": "left",
+            "text": "Pode deixar, Sr. Pasteur! Mal posso esperar pela próxima descoberta!",
+            "next": "pasteur_despedida"
+        },
+        "pasteur_despedida": {
+            "speaker": "right",
+            "text": "Continue assim e será uma grande cientista. Au revoir, pequena gênia!",
+            "next": "end"
+        }
+    }
+}

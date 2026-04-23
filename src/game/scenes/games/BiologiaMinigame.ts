@@ -460,7 +460,7 @@ export class BiologiaMinigame extends Scene {
             this.scene.launch('UIScene');
 
             // 3. Vai para a cena de Game Over e encerra ESTA cena de Biologia
-            this.scene.start('GameOver');
+            this.scene.start('GameOverBio');
         });
 
         // Adiciona todos os elementos visuais dentro do Container

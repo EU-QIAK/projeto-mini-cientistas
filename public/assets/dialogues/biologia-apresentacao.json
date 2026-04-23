@@ -1,65 +1,82 @@
 {
     "actors": {
         "left": {
-            "name": "Julia",
+            "name": "Júlia",
             "texture": "characters/julia/julia-portrait.png"
         },
         "right": {
-          "name": "Pasteur",
-            "texture": "characters/pasteur/pasteur-portrait.png"
+            "name": "Pasteur",
+            "texture": "characters/pasteur/pasteur-serio.png"
         }
     },
     "nodes": {
         "start": {
             "speaker": "right",
-            "text": "Atenção, cientista! Antes de começar, vou te mostrar nossa lista de estudos.",
+            "text": "Atenção aos detalhes, pequena cientista! O relógio vai correr e vou te ensinar como nosso laboratório funciona.",
+            "next": "regra_1"
+        },
+        "regra_1": {
+            "speaker": "right",
+            "text": "Sua missão é classificar os microrganismos. Você precisa arrastá-los para a caixa correta!",
+            "changeTexture": "characters/pasteur/pasteur-portrait.png",
+            "next": "caixa_verde"
+        },
+        "caixa_verde": {
+            "speaker": "right",
+            "text": "A caixa VERDE é para os AMIGOS! Nela entram os seres que nos ajudam. Já a caixa VERMELHA é de CUIDADO, para os causadores de doenças.",
+            "next": "duvida_julia"
+        },
+        "duvida_julia": {
+            "speaker": "left",
+            "text": "Entendi! Verde para amigos, vermelha para perigos. Mas e se eu não souber quem é quem?",
+            "next": "regra_lupa"
+        },
+        "regra_lupa": {
+            "speaker": "right",
+            "text": "Se tiver dúvida durante o jogo, é só CLICAR no microrganismo para ler sobre ele. Mas antes de começarmos, vou te apresentar a nossa lista de estudos!",
+            "changeTexture": "characters/pasteur/pasteur-serio.png",
             "next": "lacto"
         },
         "lacto": {
             "speaker": "right",
-            "text": "Este é o Lactobacillus. Ele mora no iogurte e ajuda sua barriga a funcionar bem. Ele é um Amigo!",
+            "text": "Este é o Lactobacillus. Ele é um herói que mora no iogurte e protege nossa barriga. É um AMIGO!",
             "changeTexture": "micro-Lactobacillus",
             "next": "saccha"
         },
         "saccha": {
             "speaker": "right",
-            "text": "Aqui temos o fungo Saccharomyces. Ele ajuda a fazer o pão crescer bem fofinho. Também é um Amigo!",
+            "text": "Este é o fungo Saccharomyces! Ele adora comer açúcar para fazer o pão crescer fofinho. Um grande AMIGO!",
             "changeTexture": "micro-cerevisiae",
             "next": "penic"
         },
         "penic": {
             "speaker": "right",
-            "text": "Este é o Penicillium. Você sabia que dele veio o primeiro antibiótico para curar doenças? Nosso Amigo!",
+            "text": "E o Penicillium! Um fungo incrível que nos deu o primeiro remédio para curar infecções. Nosso AMIGO valioso!",
             "changeTexture": "micro-Penicillium",
             "next": "flu"
         },
         "flu": {
             "speaker": "right",
-            "text": "Atenção agora! Este é o vírus Influenza. Ele adora causar gripes e resfriados. Cuidado com ele!",
+            "text": "Mas cuidado agora! Este é o vírus Influenza. Ele adora invadir e causar gripes. É de CUIDADO!",
             "changeTexture": "micro-Influenza",
             "next": "giardia"
         },
         "giardia": {
             "speaker": "right",
-            "text": "Esta é a Giardia. Ela vive na água suja e dá uma baita dor de barriga. Mande para a caixa de Cuidado!",
+            "text": "Eca! Essa é a Giardia. Ela se esconde em águas sujas e causa uma dor de barriga terrível. CUIDADO com ela!",
             "changeTexture": "micro-lamblia",
             "next": "salmo"
         },
         "salmo": {
             "speaker": "right",
-            "text": "Por fim, a Salmonella. Fica escondida em comidas cruas e causa intoxicação. Muito Cuidado!",
-            "changeTexture": "micro-Salmonella",
-            "next": "pre-final"
-        },
-        "pre-final": {
-            "speaker": "right",
-            "text": "agora vamos lá!!",
+            "text": "E por fim, a Salmonella. Uma bactéria malandrinha que vive em comidas cruas. CUIDADO total com ela!",
             "changeTexture": "micro-Salmonella",
             "next": "fim"
         },
         "fim": {
             "speaker": "right",
-            "text": "Tudo pronto? O relógio vai correr rápido. Boa sorte!",
+            "text": "Conseguiu memorizar? Classifique o máximo que conseguir antes que o tempo acabe. Boa sorte!",
+            "changeTexture": "characters/pasteur/pasteur-portrait.png",
             "next": "end"
         }
     }

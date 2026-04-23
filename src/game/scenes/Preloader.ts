@@ -96,12 +96,15 @@ export class Preloader extends Scene {
 
         // Diálogos
         this.load.json('tutorial-script', 'dialogues/tutorial-sistema.json');
+        //biologia
         this.load.json('biologia-intro-script', 'dialogues/biologia-intro.json');
         this.load.json('biologia-apresentacao', 'dialogues/biologia-apresentacao.json');
+        this.load.json('biologia-final', 'dialogues/biologia-final.json');
 
         // Portraits
         this.load.image('characters/julia/julia-portrait.png', 'characters/julia/julia-portrait.png');
         this.load.image('characters/pasteur/pasteur-portrait.png', 'characters/pasteur/pasteur-portrait.png');
+        this.load.image('characters/pasteur/pasteur-serio.png', 'characters/pasteur/pasteur-serio.png');
         //teste
         this.load.image('characters/julia/julia-feliz.png', 'characters/julia/julia-feliz.png');
 

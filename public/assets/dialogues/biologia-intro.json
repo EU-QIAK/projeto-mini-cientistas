@@ -12,36 +12,41 @@
     "nodes": {
         "start": {
             "speaker": "right",
-            "text": "Bonjour, pequena cientista! Eu sou Louis Pasteur! Bem-vinda ao Mundo da Biologia!",
+            "text": "Bonjour, pequena cientista! Bem-vinda ao meu laboratório! Eu sou Louis Pasteur.",
+            "next": "intro_2"
+        },
+        "intro_2": {
+            "speaker": "right",
+            "text": "Aqui nós estudamos um mundo invisível! Você sabia que existem criaturas minúsculas vivendo em toda parte? Até na nossa comida!",
             "next": "pergunta_1"
         },
         "pergunta_1": {
-            "speaker": "right",
-            "text": "Você sabia que existem seres tão pequenos que não conseguimos vê-los a olho nu? Você gostaria de vê-los?",
+            "speaker": "left",
+            "text": "Sério?! Criaturas invisíveis na comida?",
             "choices": [
-                { "text": "SIM!", "target": "resp_sim" },
-                { "text": "NÃO...", "target": "resp_nao" }
+                { "text": "Uau, eu quero ver!", "target": "resp_sim" },
+                { "text": "Eca, isso faz mal?", "target": "resp_nao" }
             ]
         },
-       "resp_sim": {
+        "resp_sim": {
             "speaker": "left",
             "changeTexture": "characters/julia/julia-feliz.png", 
-            "text": "Nossa, que incrível! Eu adoraria vê-los!",
+            "text": "Que incrível! Eu adoraria ver como eles são!",
             "next": "final_sim"
         },
         "final_sim": {
             "speaker": "right",
-            "text": "Excelente! Então venha comigo. Vamos usar o microscópio!",
+            "text": "Haha, essa é a curiosidade de uma verdadeira cientista! Vamos olhar pelo microscópio!",
             "next": "end"
         },
         "resp_nao": {
             "speaker": "left",
-            "text": "Ah... parece um pouco assustador. Tem certeza?",
+            "text": "Eca... eles não vão me deixar doente? Parece perigoso...",
             "next": "final_nao"
         },
         "final_nao": {
             "speaker": "right",
-            "text": "Não se preocupe, eles são fascinantes! Venha, vou te mostrar.",
+            "text": "Alguns sim, mas muitos são nossos super-heróis invisíveis! Venha, vou te mostrar no microscópio.",
             "next": "end"
         }
     }

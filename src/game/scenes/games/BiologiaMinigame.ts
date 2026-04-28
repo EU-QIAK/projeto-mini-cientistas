@@ -86,25 +86,40 @@ export class BiologiaMinigame extends Scene {
     // --- DESENHA A BARRA DE TEMPO NA PARTE INFERIOR ---
     private createTimerBar(width: number) {
         const barHeight = 20;
-        this.timerBarWidth = width * 0.6;
-        const barX = (width - this.timerBarWidth) / 2;
+        this.timerBarWidth = width * 0.5; // Deixei a barra um pouco menor para caber no painel
+        
+        // Medidas do Painel Branco (Fundo)
+        const panelPaddingX = 60; // Espaço extra para o ícone
+        const panelPaddingY = 15;
+        const panelWidth = this.timerBarWidth + panelPaddingX;
+        const panelHeight = barHeight + panelPaddingY * 2;
+        
+        const panelX = (width - panelWidth) / 2;
+        // Posiciona o painel inteiro 15px acima da base da Safe Area
+        const panelY = this.safeY + this.safeHeight - panelHeight - 15;
 
-        // MUDEI AQUI: Posiciona a barra na parte de BAIXO, 15px acima do limite da Safe Area
-        const barY = this.safeY + this.safeHeight - barHeight - 15;
+        // 1. Cria o Painel Branco
+        const panelBg = this.add.graphics();
+        panelBg.fillStyle(0xffffff, 0.9); // Branco quase totalmente opaco
+        panelBg.fillRoundedRect(panelX, panelY, panelWidth, panelHeight, 15);
+        panelBg.lineStyle(3, 0x87ceeb); // Borda azul clara para combinar
+        panelBg.strokeRoundedRect(panelX, panelY, panelWidth, panelHeight, 15);
 
-        // Fundo escuro da barra
+        // 2. Coordenadas exatas para a barra interna
+        const innerBarX = panelX + 45; // Empurra a barra pra direita para caber a ampulheta
+        const innerBarY = panelY + panelPaddingY;
+
+        // Fundo escuro/vazio da barra (o "trilho")
         this.timerBarBg = this.add.graphics();
-        this.timerBarBg.fillStyle(0x000000, 0.3);
-        this.timerBarBg.fillRoundedRect(barX, barY, this.timerBarWidth, barHeight, 10);
-        this.timerBarBg.lineStyle(2, 0x3d3d3d);
-        this.timerBarBg.strokeRoundedRect(barX, barY, this.timerBarWidth, barHeight, 10);
+        this.timerBarBg.fillStyle(0xe0e0e0, 1); // Cinza clarinho
+        this.timerBarBg.fillRoundedRect(innerBarX, innerBarY, this.timerBarWidth, barHeight, 10);
 
         // O preenchimento da barra (Colorida)
         this.timerBarFill = this.add.graphics();
-        this.drawTimerFill(barX, barY, this.timerBarWidth, barHeight, 0x28a745);
+        this.drawTimerFill(innerBarX, innerBarY, this.timerBarWidth, barHeight, 0x28a745);
 
-        // Ícone/Texto "Tempo" do lado da barra
-        this.add.text(barX - 10, barY + (barHeight / 2), '⏳', { fontSize: '20px' }).setOrigin(1, 0.5);
+        // Ícone/Texto "Tempo" (Ampulheta) dentro do painel
+        this.add.text(panelX + 20, panelY + (panelHeight / 2), '⏳', { fontSize: '24px' }).setOrigin(0.5);
     }
 
     private drawTimerFill(x: number, y: number, w: number, h: number, color: number) {
@@ -122,19 +137,31 @@ export class BiologiaMinigame extends Scene {
             this.timeLeft -= 0.1;
 
             const barHeight = 20;
-            const barX = (this.scale.width - this.timerBarWidth) / 2;
+            
+            // Recalcula as posições baseadas no painel branco
+            const panelPaddingX = 60;
+            const panelPaddingY = 15;
+            const panelWidth = this.timerBarWidth + panelPaddingX;
+            const panelHeight = barHeight + panelPaddingY * 2;
+            
+            const panelX = (this.scale.width - panelWidth) / 2;
+            const panelY = this.safeY + this.safeHeight - panelHeight - 15;
 
-            // MUDEI AQUI TAMBÉM: Para bater com a posição inicial
-            const barY = this.safeY + this.safeHeight - barHeight - 15;
+            // Posição exata do "trilho" onde a barra colorida deve crescer
+            const innerBarX = panelX + 45;
+            const innerBarY = panelY + panelPaddingY;
 
+            // Calcula o tamanho da barra
             const percentage = Math.max(0, this.timeLeft / this.maxTime);
             const currentWidth = this.timerBarWidth * percentage;
 
-            let barColor = 0x28a745;
-            if (percentage <= 0.25) barColor = 0xdc3545;
-            else if (percentage <= 0.5) barColor = 0xffc107;
+            // Muda a cor dependendo do tempo
+            let barColor = 0x28a745; // Verde
+            if (percentage <= 0.25) barColor = 0xdc3545; // Vermelho
+            else if (percentage <= 0.5) barColor = 0xffc107; // Amarelo
 
-            this.drawTimerFill(barX, barY, currentWidth, barHeight, barColor);
+            // Desenha o preenchimento no lugar certo
+            this.drawTimerFill(innerBarX, innerBarY, currentWidth, barHeight, barColor);
 
         } else {
             this.endGame();

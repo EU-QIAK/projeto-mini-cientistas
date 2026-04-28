@@ -35,7 +35,7 @@ export class UIScene extends Scene {
 
         this.exitText = this.add.text(0, 0, 'SAIR', {
             fontFamily: 'Fredoka',
-            fontSize: '18px',
+            fontSize: '26px',
             color: '#ffffff'
         }).setOrigin(0.5);
 

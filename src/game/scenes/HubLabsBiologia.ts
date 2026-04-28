@@ -26,6 +26,11 @@ export class HubLabsBiologia extends Scene {
     }
 
     create() {
+
+        this.scene.stop('UIScene');
+        
+        this.scene.launch('UIBiologia');
+
         const { width, height } = this.scale;
 
         // 1. Fundo do Laboratório (Sempre tela cheia)

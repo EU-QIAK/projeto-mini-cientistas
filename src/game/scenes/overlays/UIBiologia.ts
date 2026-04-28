@@ -35,9 +35,9 @@ export class UIBiologia extends Scene {
             color: '#3d3d3d'
         }).setOrigin(0.5);
 
-        this.exitText = this.add.text(0, 0, 'SAIR', {
+        this.exitText = this.add.text(0, 0, 'VOLTAR', {
             fontFamily: 'Fredoka',
-            fontSize: '18px',
+            fontSize: '26px',
             color: '#ffffff'
         }).setOrigin(0.5);
 
@@ -53,10 +53,22 @@ export class UIBiologia extends Scene {
         
         // Ação do botão de sair
         this.exitButtonZone.on('pointerdown', () => {
+
+            // 1. Desliga tudo que for relacionado à Biologia
+            this.scene.stop('BiologiaMinigame');
+            this.scene.stop('HubLabsBiologia');
+            this.scene.stop('DialogueScene'); // Caso clique em sair no meio de uma conversa
+            
+            // 2. Religa a UI genérica (a que tem o botão rosa normal)
+            this.scene.launch('UIScene');
+            
+            // 3. Volta para a tela do carrossel principal!
+            this.scene.start('HubLabsScene');
+
             // Você pode manter o reload (F5) ou usar os comandos do Phaser para voltar ao menu:
             // this.scene.stop('BiologiaMinigame');
             // this.scene.start('HubLabsScene');
-            window.location.reload(); 
+            //window.location.reload(); 
         });
 
         this.drawUI();

@@ -71,6 +71,9 @@ export class Preloader extends Scene {
         this.load.image('seta-esquerda', 'ui/seta-esquerda.png');
         this.load.image('seta-direita', 'ui/seta-direita.png');
 
+        this.load.image('Julia-Icone', 'ui/Julia-Icone.png');
+        this.load.image('Pasteur-Icone', 'ui/Pasteur-Icone.png');
+
         // Labs
         this.load.image('labs/quimica', 'labs/quimica.png');
         this.load.image('labs/fisica', 'labs/fisica.png');

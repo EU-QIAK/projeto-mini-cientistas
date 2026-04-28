@@ -51,6 +51,36 @@ export class HubLabsScene extends Scene {
 
         // NOVO: Adiciona as setas indicativas do carrossel
         this.createArrows();
+
+        // NOVO: Cria a barra de progresso com os rostinhos desbloqueados!
+        this.createProgressionIcons();
+
+        // ==========================================
+        // CÓDIGO SECRETO: Digite Z-E-R-A-R para limpar a memória
+        // ==========================================
+        
+        // 1. Cria o combo com a palavra secreta
+        const comboZerar = this.input.keyboard!.createCombo('ZERAR', {
+            resetOnWrongKey: true, // Se errar uma letra, a sequência zera
+            maxKeyDelay: 0,        // Sem limite de tempo entre as teclas
+            resetOnMatch: true
+        });
+
+        // 2. Fica escutando para ver se o jogador acertou a sequência
+        this.input.keyboard!.on('keycombomatch', (event: Phaser.Input.Keyboard.KeyCombo) => {
+            
+            // Verifica se o combo que deu 'match' é o de zerar
+            if (event.keyCodes.toString() === comboZerar.keyCodes.toString()) {
+                console.log('Código secreto ativado! Zerando progresso...');
+                
+                // Limpa o localStorage
+                localStorage.removeItem('unlockedCharacters');
+                localStorage.removeItem('biologiaRecorde');
+                
+                // Recarrega a página para tudo voltar ao início
+                window.location.reload(); 
+            }
+        });
     }
 
     private setupCarousel() {
@@ -107,7 +137,7 @@ export class HubLabsScene extends Scene {
         });
     }
 
-  private updateCarousel(animate = true) {
+    private updateCarousel(animate = true) {
         if (this.isAnimating) return;
 
         const targetX = (this.scale.width / 2) - (this.currentIndex * this.cardWidth);
@@ -368,4 +398,60 @@ export class HubLabsScene extends Scene {
             ease: 'Sine.easeInOut'
         });
     }
+
+    // --- NOVA FUNÇÃO: ÁLBUM DE PROGRESSO (ROSTINHOS) ---
+    private createProgressionIcons() {
+        const { width, height } = this.scale;
+
+        // 1. Calcula a altura da barra da UIScene para saber onde começar
+        const headerHeight = height * 0.18;
+
+        const unlockedString = localStorage.getItem('unlockedCharacters') || 'Julia';
+        const unlockedArray = unlockedString.split(',').filter(Boolean);
+
+        // Se não houver progresso, não desenha nada
+        if (unlockedArray.length === 0) return;
+
+        // 2. Configurações de layout responsivo
+        const paddingX = 100;
+        const startY = headerHeight + 50; // Posiciona 50px abaixo da barra da UIScene
+        const gap = 130;                   // Espaço entre os centros dos ícones
+        const iconTargetScale = 0.20;     // Tamanho final do rostinho
+
+        unlockedArray.forEach((charName, index) => {
+            const xPos = paddingX + (index * gap);
+            const imgKey = `${charName}-Icone`;
+
+            // --- ESTILO: Círculo de fundo suave para destacar o ícone ---
+            const glow = this.add.graphics();
+            glow.fillStyle(0xffffff, 0.3);
+            glow.fillCircle(xPos, startY, 35);
+            glow.setDepth(5); // Garante que fica atrás do ícone, mas acima do fundo
+
+            // --- O ÍCONE ---
+            const icon = this.add.image(xPos, startY, imgKey);
+            icon.setDepth(6);
+            icon.setScale(0); // Começa invisível para a animação
+
+            // Animação de entrada "Pop"
+            this.tweens.add({
+                targets: [icon, glow],
+                scale: { from: 0, to: 1 }, // O glow vai para escala 1, o ícone tratamos abaixo
+                duration: 500,
+                delay: index * 150,
+                ease: 'Back.easeOut',
+                onStart: () => {
+                    // Ajuste fino da escala final do ícone dentro da tween
+                    icon.setScale(0);
+                },
+                onUpdate: (tween) => {
+                   // Dizemos ao TypeScript: "Pode confiar, isso aqui é um número!"
+                    const progress = tween.getValue() as number; 
+                    icon.setScale(progress * iconTargetScale);
+                }
+            });
+        });
+    }
+
+
 }

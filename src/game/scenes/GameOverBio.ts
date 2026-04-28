@@ -63,11 +63,23 @@ export class GameOverBio extends Scene {
             this.scene.launch('DialogueScene', {
                 script: scriptFinal,
                 parentScene: 'GameOverBio', // Referência correta para esta cena
-                onComplete: () => {
+               onComplete: () => {
                     // SÓ VOLTA AO HUB QUANDO O DIÁLOGO TERMINAR
                     console.log("Diálogo concluído. Retornando ao Hub...");
                     
-                    // Se você usa a UIScene no Hub, lembre-se de lançá-la aqui
+                    // ==========================================
+                    // --- SALVA O ÍCONE DO PASTEUR NA MEMÓRIA ---
+                    // ==========================================
+                    let unlocked = localStorage.getItem('unlockedCharacters') || 'Julia'; 
+                    
+                    // Só adiciona se o Pasteur ainda não estiver salvo na lista
+                    if (!unlocked.includes('Pasteur')) {
+                        unlocked += ',Pasteur';
+                        localStorage.setItem('unlockedCharacters', unlocked);
+                    }
+                    // ==========================================
+                    
+                    // Fecha essa tela de Game Over e volta para o Menu
                     this.scene.stop('GameOverBio');
                     this.scene.start('HubLabsScene');
                 }

@@ -3,9 +3,9 @@ import { Scene } from 'phaser';
 export class HubLabsScene extends Scene {
     private labsCards = [
         { name: 'Biologia', image: 'labs/biologia' },     // <--- Agora é o primeiro!
+        { name: 'Odontologia', image: 'labs/odonto' },
         { name: 'Química', image: 'labs/quimica' },
         { name: 'Física', image: 'labs/fisica' },
-        { name: 'Odontologia', image: 'labs/odonto' },
         { name: 'Medicina', image: 'labs/medicina' },
         { name: 'Inteligência Artificial', image: 'labs/ia' }
     ];
@@ -20,6 +20,9 @@ export class HubLabsScene extends Scene {
     private isPopupOpen = false;
     private popupContainer!: Phaser.GameObjects.Container;
     private popupText!: Phaser.GameObjects.Text;
+
+    //variável de som
+    private bgMusic!: Phaser.Sound.BaseSound;
 
     constructor() {
         super('HubLabsScene');
@@ -56,9 +59,22 @@ export class HubLabsScene extends Scene {
         this.createProgressionIcons();
 
         // ==========================================
+        // --- GERENCIAMENTO SEGURO DA MÚSICA ---
+        // ==========================================
+
+        // 1. Verifica se a música já existe e já está tocando. Se sim, não fazemos nada!
+        // Isso evita que a música fique "dobrada" quando o jogador volta de um minigame.
+        if (!this.bgMusic || !this.bgMusic.isPlaying) {
+
+            // ATENÇÃO: Verifique se a chave 'Carrosel' é exatamente a mesma que está no Preloader.ts
+            this.bgMusic = this.sound.add('Carrosel', { volume: 0.3, loop: true });
+            this.bgMusic.play();
+        }
+
+        // ==========================================
         // CÓDIGO SECRETO: Digite Z-E-R-A-R para limpar a memória
         // ==========================================
-        
+
         // 1. Cria o combo com a palavra secreta
         const comboZerar = this.input.keyboard!.createCombo('ZERAR', {
             resetOnWrongKey: true, // Se errar uma letra, a sequência zera
@@ -68,19 +84,26 @@ export class HubLabsScene extends Scene {
 
         // 2. Fica escutando para ver se o jogador acertou a sequência
         this.input.keyboard!.on('keycombomatch', (event: Phaser.Input.Keyboard.KeyCombo) => {
-            
+
             // Verifica se o combo que deu 'match' é o de zerar
             if (event.keyCodes.toString() === comboZerar.keyCodes.toString()) {
                 console.log('Código secreto ativado! Zerando progresso...');
-                
+
                 // Limpa o localStorage
                 localStorage.removeItem('unlockedCharacters');
                 localStorage.removeItem('biologiaRecorde');
-                
+
                 // Recarrega a página para tudo voltar ao início
-                window.location.reload(); 
+                window.location.reload();
             }
         });
+
+        this.events.once('shutdown', () => {
+            if (this.bgMusic && this.bgMusic.isPlaying) {
+                this.bgMusic.stop();
+            }
+        });
+
     }
 
     private setupCarousel() {
@@ -264,11 +287,13 @@ export class HubLabsScene extends Scene {
 
         if (labName === 'Biologia') {
             this.scene.start('HubLabsBiologia');
+        } else if (labName === 'Odontologia') {
+            // --- CORREÇÃO AQUI: Mudando a chave para o nome completo ---
+            this.scene.start('HubLabsOdontologia');
         } else if (labName === 'Física' || labName === 'Química') {
             this.scene.start('Game');
         } else {
             console.log(`${labName} em desenvolvimento!`);
-            // Se estiver em desenvolvimento, apenas fecha o popup
             this.closePopup();
         }
     }
@@ -445,8 +470,8 @@ export class HubLabsScene extends Scene {
                     icon.setScale(0);
                 },
                 onUpdate: (tween) => {
-                   // Dizemos ao TypeScript: "Pode confiar, isso aqui é um número!"
-                    const progress = tween.getValue() as number; 
+                    // Dizemos ao TypeScript: "Pode confiar, isso aqui é um número!"
+                    const progress = tween.getValue() as number;
                     icon.setScale(progress * iconTargetScale);
                 }
             });

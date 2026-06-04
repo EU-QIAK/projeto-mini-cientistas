@@ -14,6 +14,11 @@ export class Preloader extends Scene {
         // Fundo (usando a logo ou um fundo neutro carregado no Boot)
         this.add.image(width, height, 'background').setDisplaySize(width, height);
 
+        // Fundo (usando a logo ou um fundo neutro carregado no Boot)
+        this.add.image(width / 2, height / 2, 'background')
+            .setOrigin(0.5) // Define o ponto âncora para o meio exato da imagem
+            .setDisplaySize(width, height); // Força a cobrir a tela inteira (opcional, dependendo do tamanho original)
+
         // Configurações da barra
         const barWidth = 400;
         const barHeight = 24;
@@ -71,8 +76,10 @@ export class Preloader extends Scene {
         this.load.image('seta-esquerda', 'ui/seta-esquerda.png');
         this.load.image('seta-direita', 'ui/seta-direita.png');
 
+        //icones dos personagens
         this.load.image('Julia-Icone', 'ui/Julia-Icone.png');
         this.load.image('Pasteur-Icone', 'ui/Pasteur-Icone.png');
+        this.load.image('Pierre-Icone', 'ui/Pierre-Icone.png');
 
         // Labs
         this.load.image('labs/quimica', 'labs/quimica.png');
@@ -96,23 +103,45 @@ export class Preloader extends Scene {
         //carregando os sprits dos personagens
         this.load.image('julia', 'characters/julia/julia-scene-pensitive.png'); // Ajuste o nome/caminho se necessário
         this.load.image('pasteur', 'characters/pasteur/pasteur-normal.png');
+        this.load.image('pierre', 'characters/pierre/Pierre Fauchard-normal.png');
+        
 
         // Diálogos
         this.load.json('tutorial-script', 'dialogues/tutorial-sistema.json');
+
         //biologia
         this.load.json('biologia-intro-script', 'dialogues/biologia-intro.json');
         this.load.json('biologia-apresentacao', 'dialogues/biologia-apresentacao.json');
         this.load.json('biologia-final', 'dialogues/biologia-final.json');
 
+        //odontologia
+        this.load.json('odontologia-intro', 'dialogues/odontologia-intro.json');
+        
+
         // Portraits
+        //Julia
         this.load.image('characters/julia/julia-portrait.png', 'characters/julia/julia-portrait.png');
+        this.load.image('characters/julia/julia-feliz.png', 'characters/julia/julia-feliz.png');
+
+        //pastuer
         this.load.image('characters/pasteur/pasteur-portrait.png', 'characters/pasteur/pasteur-portrait.png');
         this.load.image('characters/pasteur/pasteur-serio.png', 'characters/pasteur/pasteur-serio.png');
-        //teste
-        this.load.image('characters/julia/julia-feliz.png', 'characters/julia/julia-feliz.png');
+        
+        //pierre
+        this.load.image('characters/pierre/pierre-normal.png', 'characters/pierre/pierre-normal.png');
+        this.load.image('characters/pierre/pierre-feliz.png', 'characters/pierre/pierre-feliz.png');
+
+        
+
 
         // Sons
         this.load.audio('click', 'sounds/click.wav');
+        this.load.audio('Carrosel', 'sounds/Carrosel.mp3');
+
+        this.load.audio('BiologiaMinigame', 'sounds/BiologiaMinigame.mp3');
+        this.load.audio('Som_Erro', 'sounds/Som_Erro.mp3');
+        this.load.audio('Som_Acerto', 'sounds/Som_Acerto.mp3');
+
 
         // Fonte
         (this.load as any).font('Fredoka', 'https://fonts.googleapis.com/css2?family=Fredoka:wght@700&display=swap');

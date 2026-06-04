@@ -1,0 +1,60 @@
+{
+    "actors": {
+        "left": {
+            "name": "Júlia",
+            "texture": "characters/julia/julia-portrait.png"
+        },
+        "right": {
+            "name": "Pierre",
+            "texture": "characters/pierre/pierre-normal.png"
+        }
+    },
+    "nodes": {
+        "start": {
+            "speaker": "right",
+            "text": "Oi, pequeno escovador! Eu sou Pierre Fauchard, pai da odontologia moderna!",
+            "next": "intro_2"
+        },
+        "intro_2": {
+            "speaker": "right",
+            "text": "Você sabia que a placa bacteriana é um biofilme pegajoso de bactérias que gruda nos dentes?",
+            "next": "pergunta_1"
+        },
+        "pergunta_1": {
+            "speaker": "left",
+            "text": "Eca! Um biofilme pegajoso? Mas todas essas bactérias são ruins?",
+            "choices": [
+                { "text": "Sim, temos que acabar com todas!", "target": "resp_todas_ruins" },
+                { "text": "Acho que algumas devem ajudar...", "target": "resp_algumas_boas" }
+            ]
+        },
+        "resp_todas_ruins": {
+            "speaker": "left",
+            "text": "Sim! Temos que acabar com todas para proteger os dentes!",
+            "next": "final_todas_ruins"
+        },
+        "final_todas_ruins": {
+            "speaker": "right",
+            "changeTexture": "characters/pierre/pierre-feliz.png",
+            "text": "Na verdade, não! Algumas bactérias são amigas e nos protegem.",
+            "next": "intro_3"
+        },
+        "resp_algumas_boas": {
+            "speaker": "left",
+            "changeTexture": "characters/julia/julia-feliz.png",
+            "text": "Acho que algumas devem ajudar a gente, né?",
+            "next": "final_algumas_boas"
+        },
+        "final_algumas_boas": {
+            "speaker": "right",
+            "changeTexture": "characters/pierre/pierre-feliz.png",
+            "text": "Exatamente! Algumas bactérias são amigas e nos protegem.",
+            "next": "intro_3"
+        },
+        "intro_3": {
+            "speaker": "right",
+            "text": "Porém, outras formam placas que causam cáries e gengivite — vamos limpar isso! Pegue esta Lupa Dental e vamos montar a escovação perfeita!",
+            "next": "end"
+        }
+    }
+}

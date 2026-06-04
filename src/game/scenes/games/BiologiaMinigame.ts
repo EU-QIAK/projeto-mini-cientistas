@@ -26,9 +26,12 @@ export class BiologiaMinigame extends Scene {
     // UI Elements locais
     private infoText!: GameObjects.Text;
     private scoreText!: GameObjects.Text;
-    private recordeText!: GameObjects.Text; // <--- ADICIONE ESTA LINHA
+    private recordeText!: GameObjects.Text;
     private infoBoxBg!: GameObjects.Graphics;
     private panelBounds!: { x: number, y: number, w: number, h: number };
+
+    // --- NOVA VARIÁVEL DE ÁUDIO ---
+    private bgMusic!: Phaser.Sound.BaseSound;
 
     private microbesData: MicroorganismoData[] = [
         { id: 'lacto', nome: 'Lactobacillus', texto: 'Oi! Eu sou o Lactobacillus! Moro no iogurte e ajudo sua barriga a funcionar bem!', isAmigo: true, texture: 'micro-Lactobacillus' },
@@ -53,6 +56,15 @@ export class BiologiaMinigame extends Scene {
     create() {
         this.scene.stop('UIScene');
         this.scene.launch('UIBiologia');
+
+        // ==========================================
+        // --- GERENCIAMENTO SEGURO DA MÚSICA ---
+        // ==========================================
+        if (!this.bgMusic || !this.bgMusic.isPlaying) {
+            this.bgMusic = this.sound.add('BiologiaMinigame', { volume: 0.3, loop: true });
+            this.bgMusic.play();
+        }
+        // ==========================================
 
         const { width, height } = this.scale;
 
@@ -80,6 +92,13 @@ export class BiologiaMinigame extends Scene {
             callbackScope: this,
             loop: true
         });
+
+        // --- LIMPEZA AUTOMÁTICA DO ÁUDIO AO SAIR DA CENA ---
+        this.events.once('shutdown', () => {
+            if (this.bgMusic && this.bgMusic.isPlaying) {
+                this.bgMusic.stop();
+            }
+        });
     }
 
     // --- NOVA FUNÇÃO: DESENHA A BARRA DE TEMPO ---
@@ -87,13 +106,13 @@ export class BiologiaMinigame extends Scene {
     private createTimerBar(width: number) {
         const barHeight = 20;
         this.timerBarWidth = width * 0.5; // Deixei a barra um pouco menor para caber no painel
-        
+
         // Medidas do Painel Branco (Fundo)
         const panelPaddingX = 60; // Espaço extra para o ícone
         const panelPaddingY = 15;
         const panelWidth = this.timerBarWidth + panelPaddingX;
         const panelHeight = barHeight + panelPaddingY * 2;
-        
+
         const panelX = (width - panelWidth) / 2;
         // Posiciona o painel inteiro 15px acima da base da Safe Area
         const panelY = this.safeY + this.safeHeight - panelHeight - 15;
@@ -137,13 +156,13 @@ export class BiologiaMinigame extends Scene {
             this.timeLeft -= 0.1;
 
             const barHeight = 20;
-            
+
             // Recalcula as posições baseadas no painel branco
             const panelPaddingX = 60;
             const panelPaddingY = 15;
             const panelWidth = this.timerBarWidth + panelPaddingX;
             const panelHeight = barHeight + panelPaddingY * 2;
-            
+
             const panelX = (this.scale.width - panelWidth) / 2;
             const panelY = this.safeY + this.safeHeight - panelHeight - 15;
 
@@ -196,7 +215,7 @@ export class BiologiaMinigame extends Scene {
         this.add.text(zoneRight.x, zoneRight.y - (zoneHeight / 2) + 20, '💚 AMIGOS', { fontFamily: 'Fredoka', fontSize: '24px', color: '#00ff00' }).setOrigin(0.5);
     }
 
-   private createInfoPanel(width: number) {
+    private createInfoPanel(width: number) {
         const panelHeight = this.safeHeight * 0.15;
         const panelWidth = width * 0.40;
         const panelY = this.safeY + (this.safeHeight * 0.10);
@@ -220,12 +239,12 @@ export class BiologiaMinigame extends Scene {
         const recordeAtual = parseInt(localStorage.getItem('biologiaRecorde') || '0');
 
         const scoreX = width * 0.05; // 5% da borda esquerda
-        const scoreY = this.safeY + 20; 
-        
+        const scoreY = this.safeY + 20;
+
         // Texto de Pontuação (Atual)
         this.scoreText = this.add.text(scoreX, scoreY, `🏆 Pontos: 0`, {
             fontFamily: 'Fredoka', fontSize: '36px', color: '#e7e7e7', fontStyle: 'bold'
-        }).setOrigin(0, 0.4); 
+        }).setOrigin(0, 0.4);
 
         // Novo Texto de Recorde (Abaixo da Pontuação)
         this.recordeText = this.add.text(scoreX, scoreY + 30, `🌟 Recorde: ${recordeAtual}`, {
@@ -482,12 +501,12 @@ export class BiologiaMinigame extends Scene {
         btnContZone.on('pointerdown', () => {
             // 1. Para a UI do laboratório de Biologia que estava rodando em paralelo
             this.scene.stop('UIBiologia');
-
+            
             // 2. Lança a sua UI padrão novamente
             this.scene.launch('UIScene');
 
             // 3. Vai para a cena de Game Over e encerra ESTA cena de Biologia
-            this.scene.start('GameOverBio');
+            this.scene.start('GameOverBio', { score: this.score });
         });
 
         // Adiciona todos os elementos visuais dentro do Container

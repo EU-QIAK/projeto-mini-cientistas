@@ -1,6 +1,6 @@
 import { Scene, GameObjects } from 'phaser';
 
-export class UIBiologia extends Scene {
+export class UIOdontologia extends Scene {
     private uiGraphics!: GameObjects.Graphics;
     private headerTitle!: GameObjects.Text;
     private exitText!: GameObjects.Text;
@@ -20,7 +20,7 @@ export class UIBiologia extends Scene {
 
     constructor() {
         // A chave mudou para não dar conflito com a UIScene principal!
-        super({ key: 'UIBiologia' }); 
+        super({ key: 'UIOdontologia' }); 
     }
 
     create(): void {
@@ -29,7 +29,7 @@ export class UIBiologia extends Scene {
         this.logoImg = this.add.image(0, 0, 'Logo');
 
         // --- MUDANÇA 1: Título do Laboratório ---
-        this.headerTitle = this.add.text(0, 0, 'Laboratório de Biologia', {
+        this.headerTitle = this.add.text(0, 0, 'Laboratório de Odontologia', {
             fontFamily: 'Fredoka',
             fontSize: '32px',
             color: '#3d3d3d'
@@ -42,7 +42,7 @@ export class UIBiologia extends Scene {
         }).setOrigin(0.5);
 
         // --- MUDANÇA 2: Instruções do Mini-game ---
-        this.controlsText = this.add.text(0, 0, 'CCLIQUE PARA FALAR  •  CONHEÇA LOUIS PASTUER', {
+        this.controlsText = this.add.text(0, 0, 'CLIQUE PARA FALAR  •  CONHEÇA O DR. PIERRE FAUCHARD', {
             fontFamily: 'Fredoka',
             fontSize: '16px',
             color: '#3d3d3d',
@@ -55,8 +55,8 @@ export class UIBiologia extends Scene {
         this.exitButtonZone.on('pointerdown', () => {
 
             // 1. Desliga tudo que for relacionado à Biologia
-            this.scene.stop('BiologiaMinigame');
-            this.scene.stop('HubLabsBiologia');
+            //this.scene.stop('BiologiaMinigame');
+            this.scene.stop('HubLabsOdontologia');
             this.scene.stop('DialogueScene'); // Caso clique em sair no meio de uma conversa
             
             // 2. Religa a UI genérica (a que tem o botão rosa normal)

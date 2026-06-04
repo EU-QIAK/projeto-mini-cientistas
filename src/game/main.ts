@@ -6,10 +6,17 @@ import { Preloader } from './scenes/Preloader';
 import { HubLabsScene } from './scenes/HubLabsScene';
 import { UIScene } from './scenes/overlays/UIScene';
 import { DialogueScene } from './scenes/overlays/DialogueScene';
+
+//Biologia//
 import { HubLabsBiologia } from './scenes/HubLabsBiologia';
-import { BiologiaMinigame } from './scenes/games/BiologiaMinigame';
 import { UIBiologia } from './scenes/overlays/UIBiologia';
+import { BiologiaMinigame } from './scenes/games/BiologiaMinigame';
 import { GameOverBio } from './scenes/GameOverBio';
+
+//Odontologia//
+import { HubLabsOdontologia } from './scenes/HubLabsOdontologia';
+import { UIOdontologia } from './scenes/overlays/UIOdontologia';
+
 
 //  Find out more information about the Game Config at:
 //  https://docs.phaser.io/api-documentation/typedef/types-core#gameconfig
@@ -38,6 +45,8 @@ const config: Phaser.Types.Core.GameConfig = {
         BiologiaMinigame,
         GameOverBio,
         UIBiologia,
+        HubLabsOdontologia,
+        UIOdontologia,
         DialogueScene
     ]
 }; 

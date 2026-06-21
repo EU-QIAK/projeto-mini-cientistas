@@ -42,7 +42,7 @@ export class UIBiologia extends Scene {
         }).setOrigin(0.5);
 
         // --- MUDANÇA 2: Instruções do Mini-game ---
-        this.controlsText = this.add.text(0, 0, 'CCLIQUE PARA FALAR  •  CONHEÇA LOUIS PASTUER', {
+        this.controlsText = this.add.text(0, 0, 'SEPARE OS MICRORGANISMOS BONS DOS MALS', {
             fontFamily: 'Fredoka',
             fontSize: '16px',
             color: '#3d3d3d',

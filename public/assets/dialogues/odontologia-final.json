@@ -1,0 +1,38 @@
+{
+    "actors": {
+        "left": {
+            "name": "Júlia",
+            "texture": "characters/julia/julia-portrait.png"
+        },
+        "right": {
+            "name": "Pierre",
+            "texture": "characters/pierre/pierre-normal.png"
+        }
+    },
+    "nodes": {
+        "start": {
+            "speaker": "right",
+            "text": "Magnifique! Você guiou o dente e o protegeu com uma destreza formidável!",
+            "changeTexture": "characters/pierre/pierre-feliz.png",
+            "next": "conclusao_1"
+        },
+        "conclusao_1": {
+            "speaker": "right",
+            "text": "Aquelas bactérias Streptococcus mutans são implacáveis, mas coletando toda aquela pasta, o flúor deixou o esmalte forte como um escudo!",
+            "changeTexture": "characters/pierre/pierre-normal.png",
+            "next": "resposta_julia"
+        },
+        "resposta_julia": {
+            "speaker": "left",
+            "text": "Ufa, foi muita correria, mas conseguimos! Agora eu entendi que escovar os dentes é a nossa melhor defesa.",
+            "changeTexture": "characters/julia/julia-feliz.png",
+            "next": "entrega_medalha"
+        },
+        "entrega_medalha": {
+            "speaker": "right",
+            "text": "Exatamente, pequena cientista! Como prova da sua dedicação à saúde bucal, lhe entrego meu ícone de honra. Leve-o com orgulho no seu álbum!",
+            "changeTexture": "characters/pierre/pierre-feliz.png",
+            "next": "end"
+        }
+    }
+}

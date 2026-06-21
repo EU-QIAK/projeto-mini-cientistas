@@ -1,0 +1,60 @@
+{
+    "actors": {
+        "left": {
+            "name": "Júlia",
+            "texture": "characters/julia/julia-portrait.png"
+        },
+        "right": {
+            "name": "Pierre",
+            "texture": "characters/pierre/pierre-normal.png"
+        }
+    },
+    "nodes": {
+        "start": {
+            "speaker": "right",
+            "text": "Aqui estamos na nossa arena de combate microscópica! O relógio vai correr e você precisa agir rápido.",
+            "next": "mostra_dente"
+        },
+        "mostra_dente": {
+            "speaker": "right",
+            "changeTexture": "dente",
+            "text": "Sua missão é proteger o nosso paciente: o Dente Fofinho. Ele é forte, mas precisa da sua ajuda para não ser colonizado.",
+            "next": "regra_clique"
+        },
+        "regra_clique": {
+            "speaker": "right",
+            "changeTexture": "characters/pierre/pierre-feliz.png",
+            "text": "Para movê-lo, é muito fácil: basta CLICAR em qualquer lugar da tela e ele seguirá o seu comando sem parar!",
+            "next": "duvida_julia"
+        },
+        "duvida_julia": {
+            "speaker": "left",
+            "text": "Entendi! Eu clico e o dente segue. Mas e esse rastro azul brilhante que ele deixa para trás?",
+            "next": "regra_rastro"
+        },
+        "regra_rastro": {
+            "speaker": "right",
+            "changeTexture": "characters/pierre/pierre-normal.png",
+            "text": "Esse rastro de flúor deixa ele bem brilhante! Mas atenção: é apenas um efeito visual super legal. Ele não elimina os inimigos, você precisa desviar deles!",
+            "next": "mostra_mutans"
+        },
+        "mostra_mutans": {
+            "speaker": "right",
+            "changeTexture": "bacteria",
+            "text": "E por falar em inimigos... Lembra daquelas vilãs? Eis a Streptococcus mutans! Ela vai perseguir o dente para tentar criar cáries. Fuja dela a todo custo!",
+            "next": "mostra_pasta"
+        },
+        "mostra_pasta": {
+            "speaker": "right",
+            "changeTexture": "pasta",
+            "text": "Para se defender, colete os tubos de Pasta de Dente! Eles contêm o flúor que bloqueia os ataques ácidos e aumentam muito a sua pontuação!",
+            "next": "fim"
+        },
+        "fim": {
+            "speaker": "right",
+            "changeTexture": "characters/pierre/pierre-feliz.png",
+            "text": "Memorizou tudo? Guie o dente, fuja das bactérias e colete as pastas até o tempo acabar. Vamos começar a batalha!",
+            "next": "end"
+        }
+    }
+}

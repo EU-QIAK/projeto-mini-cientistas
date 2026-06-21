@@ -99,6 +99,12 @@ export class Preloader extends Scene {
         this.load.image('micro-cerevisiae', 'objects/microbios/Saccharomyces cerevisiae.png');
         this.load.image('micro-Salmonella', 'objects/microbios/Salmonella.png');
 
+        //// --- ASSETS DO MINIGAME DE ODONTO ---
+        this.load.image('dente', 'objects/Odonto/dente.png');
+        this.load.image('bacteria', 'objects/Odonto/bacteria.png');
+        this.load.image('pasta', 'objects/Odonto/pasta.png');
+        this.load.image('fundo-odontologia', 'backgrounds/fundo-odontologia.png');
+
 
         //carregando os sprits dos personagens
         this.load.image('julia', 'characters/julia/julia-scene-pensitive.png'); // Ajuste o nome/caminho se necessário
@@ -116,6 +122,8 @@ export class Preloader extends Scene {
 
         //odontologia
         this.load.json('odontologia-intro', 'dialogues/odontologia-intro.json');
+        this.load.json('odontologia-apresentacao', 'dialogues/odontologia-apresentacao.json');
+        this.load.json('odontologia-final', 'dialogues/odontologia-final.json');
         
 
         // Portraits
@@ -132,7 +140,6 @@ export class Preloader extends Scene {
         this.load.image('characters/pierre/pierre-feliz.png', 'characters/pierre/pierre-feliz.png');
 
         
-
 
         // Sons
         this.load.audio('click', 'sounds/click.wav');

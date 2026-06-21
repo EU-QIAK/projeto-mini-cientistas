@@ -29,16 +29,21 @@
         "pasteur_licao": {
             "speaker": "right",
             "text": "Sempre lembre: lavar bem as mãos e comer alimentos bem cozidos nos protege dos invasores!",
+            "next": "pasteur_entrega_icone"
+        },
+        "pasteur_entrega_icone": {
+            "speaker": "right",
+            "text": "Como prova da sua brilhante dedicação, lhe entrego o meu ícone de honra. Guarde-o com carinho no seu álbum de cientistas!",
             "next": "julia_despedida"
         },
         "julia_despedida": {
             "speaker": "left",
-            "text": "Pode deixar, Sr. Pasteur! Mal posso esperar pela próxima descoberta!",
+            "text": "Uau, muito obrigada, Sr. Pasteur! Mal posso esperar pela próxima descoberta!",
             "next": "pasteur_despedida"
         },
         "pasteur_despedida": {
             "speaker": "right",
-            "text": "Continue assim e será uma grande cientista. Au revoir, pequena gênia!",
+            "text": "Continue sempre curiosa e será uma grande pesquisadora. Au revoir, pequena gênia!",
             "next": "end"
         }
     }

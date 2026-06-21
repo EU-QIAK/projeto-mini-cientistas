@@ -12,48 +12,53 @@
     "nodes": {
         "start": {
             "speaker": "right",
-            "text": "Oi, pequeno escovador! Eu sou Pierre Fauchard, pai da odontologia moderna!",
+            "text": "Bonjour! Eu sou Pierre Fauchard, o pai da odontologia moderna! É uma honra receber uma jovem cientista em meu consultório.",
             "next": "intro_2"
         },
         "intro_2": {
             "speaker": "right",
-            "text": "Você sabia que a placa bacteriana é um biofilme pegajoso de bactérias que gruda nos dentes?",
+            "text": "Hoje vamos falar sobre a placa bacteriana, um biofilme pegajoso cheio de vida que gruda nos nossos dentes.",
+            "next": "reacao_julia"
+        },
+        "reacao_julia": {
+            "speaker": "left",
+            "text": "Eca! Um biofilme cheio de bactérias na nossa própria boca?",
             "next": "pergunta_1"
         },
         "pergunta_1": {
-            "speaker": "left",
-            "text": "Eca! Um biofilme pegajoso? Mas todas essas bactérias são ruins?",
+            "speaker": "right",
+            "text": "Isso mesmo! Mas me diga, pequena cientista: o que você acha? Todas essas bactérias são grandes vilãs?",
             "choices": [
-                { "text": "Sim, temos que acabar com todas!", "target": "resp_todas_ruins" },
-                { "text": "Acho que algumas devem ajudar...", "target": "resp_algumas_boas" }
+                { "text": "Sim! Temos que acabar com todas!", "target": "resp_todas_ruins" },
+                { "text": "Acho que algumas podem ser amigas...", "target": "resp_algumas_boas" }
             ]
         },
         "resp_todas_ruins": {
             "speaker": "left",
-            "text": "Sim! Temos que acabar com todas para proteger os dentes!",
+            "text": "Sim! Com certeza temos que acabar com todas para proteger os dentes!",
             "next": "final_todas_ruins"
         },
         "final_todas_ruins": {
             "speaker": "right",
             "changeTexture": "characters/pierre/pierre-feliz.png",
-            "text": "Na verdade, não! Algumas bactérias são amigas e nos protegem.",
+            "text": "Na verdade, não! Nossa boca precisa de equilíbrio. Temos muitas bactérias amigas que vivem em harmonia e nos ajudam na digestão e proteção.",
             "next": "intro_3"
         },
         "resp_algumas_boas": {
             "speaker": "left",
             "changeTexture": "characters/julia/julia-feliz.png",
-            "text": "Acho que algumas devem ajudar a gente, né?",
+            "text": "Acho que não... Se a nossa boca precisa de equilíbrio, algumas devem nos ajudar de alguma forma, né?",
             "next": "final_algumas_boas"
         },
         "final_algumas_boas": {
             "speaker": "right",
             "changeTexture": "characters/pierre/pierre-feliz.png",
-            "text": "Exatamente! Algumas bactérias são amigas e nos protegem.",
+            "text": "Exatamente! Você tem a intuição brilhante. Temos várias bactérias amigas que vivem em harmonia e nos ajudam na proteção.",
             "next": "intro_3"
         },
         "intro_3": {
             "speaker": "right",
-            "text": "Porém, outras formam placas que causam cáries e gengivite — vamos limpar isso! Pegue esta Lupa Dental e vamos montar a escovação perfeita!",
+            "text": "Porém, outras se alimentam de açúcar e produzem ácidos que causam a cárie! Precisamos defender os dentes contra essas vilãs. Pronta para conhecer nossa arena de combate?",
             "next": "end"
         }
     }

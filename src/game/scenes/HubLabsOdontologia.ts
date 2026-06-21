@@ -57,7 +57,7 @@ export class HubLabsOdontologia extends Scene {
 
         this.juliaThoughtText = this.add.text(0, 0, 'quem é ele?', {
             fontFamily: 'Fredoka',
-            color: '#3d3d3d', 
+            color: '#3d3d3d',
             align: 'center',
             fontStyle: 'italic'
         }).setOrigin(0.5);
@@ -108,25 +108,25 @@ export class HubLabsOdontologia extends Scene {
 
         this.tweens.add({
             targets: this.juliaContainer,
-            x: this.finalJuliaX, 
+            x: this.finalJuliaX,
             alpha: 1,
             duration: 1200,
-            ease: 'Cubic.easeOut' 
+            ease: 'Cubic.easeOut'
         });
 
         this.tweens.add({
             targets: this.pierreContainer,
-            x: this.finalPierreX, 
+            x: this.finalPierreX,
             alpha: 1,
             duration: 1200,
-            delay: 300, 
+            delay: 300,
             ease: 'Cubic.easeOut',
             onComplete: () => {
                 this.startSceneAnimations();
             }
         });
 
-        // --- INTERAÇÕES DO PIERRE ---
+       // --- INTERAÇÕES DO PIERRE ---
         this.pierreImg.on('pointerover', () => this.pierreImg.setTint(0xffffff));
         this.pierreImg.on('pointerout', () => this.pierreImg.clearTint());
 
@@ -135,31 +135,46 @@ export class HubLabsOdontologia extends Scene {
 
             const scriptIntro = this.cache.json.get('odontologia-intro');
 
+            // Pausa o laboratório (animações do fundo, etc)
             this.scene.pause();
 
+            // Lança a primeira cena de diálogo
             this.scene.launch('DialogueScene', {
                 script: scriptIntro,
                 parentScene: 'HubLabsOdontologia',
                 onComplete: () => {
+                    console.log("Diálogo 1 acabou! Fechando cena de diálogo...");
+
+                    // 1. Fecha a cena de diálogo atual
                     this.scene.stop('DialogueScene');
 
+                    // 2. O SEGREDO: Dá um pequeno tempo (200ms) para o Phaser "limpar" a cena antes de abri-la de novo
                     this.time.delayedCall(200, () => {
-                        const scriptApresentacao = this.cache.json.get('odonto-apresentacao');
+
+                        const scriptApresentacao = this.cache.json.get('odontologia-apresentacao');
 
                         if (!scriptApresentacao) {
-                            console.error("ERRO: O arquivo odonto-apresentacao.json não foi encontrado!");
+                            console.error("ERRO: O arquivo odontologia-apresentacao.json não foi encontrado!");
                             return;
                         }
 
+                        console.log("Iniciando Diálogo 2 (Apresentação)...");
+                        
+                        // 3. Lança a cena de diálogo de novo, agora com o segundo script
                         this.scene.launch('DialogueScene', {
                             script: scriptApresentacao,
                             parentScene: 'HubLabsOdontologia',
                             onComplete: () => {
+                                console.log("Apresentação acabou! Partiu jogo!");
+                                
+                                // Quando a apresentação terminar, fechamos tudo e iniciamos o minigame
+                                this.scene.stop('DialogueScene');
                                 this.scene.stop('HubLabsOdontologia');
-                                this.scene.start('OdontoMinigame');
+                                this.scene.start('OdontologiaMinigame');
                             }
                         });
-                    }); 
+
+                    }); // <-- Fim do delay!
                 }
             });
         });
@@ -183,7 +198,7 @@ export class HubLabsOdontologia extends Scene {
         // 2. Efeito de pulso APENAS na força (outerStrength) do Brilho
         this.tweens.add({
             targets: this.pierreGlow,
-            outerStrength: 7, 
+            outerStrength: 7,
             duration: 800,
             yoyo: true,
             repeat: -1,
@@ -193,11 +208,11 @@ export class HubLabsOdontologia extends Scene {
         // 3. Bounce Contínuo no Balão de Pensamento da Júlia
         this.tweens.add({
             targets: [this.juliaThoughtBalloon, this.juliaThoughtText],
-            y: '-=10', 
-            duration: 600, 
+            y: '-=10',
+            duration: 600,
             yoyo: true,
             repeat: -1,
-            ease: 'Sine.easeInOut' 
+            ease: 'Sine.easeInOut'
         });
 
         // 4. Efeito de Respiração (Júlia e Pierre flutuam muito levemente)
@@ -234,8 +249,8 @@ export class HubLabsOdontologia extends Scene {
         this.pierreImg.setScale(pierreScale);
 
         const pierreFloorY = safeY + (safeHeight * 0.90);
-        this.finalPierreX = width * 0.75; 
-        this.pierreContainer.y = pierreFloorY; 
+        this.finalPierreX = width * 0.75;
+        this.pierreContainer.y = pierreFloorY;
 
         // 2. JÚLIA (Red - Frente Esquerda)
         const juliaTargetHeight = baseCharHeight * 1.85;
@@ -243,8 +258,8 @@ export class HubLabsOdontologia extends Scene {
         this.juliaImg.setScale(juliaScale);
 
         const juliaFloorY = safeY + safeHeight;
-        this.finalJuliaX = width * 0.25; 
-        this.juliaContainer.y = juliaFloorY; 
+        this.finalJuliaX = width * 0.25;
+        this.juliaContainer.y = juliaFloorY;
 
         // ==========================================
         // BALÃO E TEXTO DA JÚLIA

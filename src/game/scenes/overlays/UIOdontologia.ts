@@ -41,8 +41,9 @@ export class UIOdontologia extends Scene {
             color: '#ffffff'
         }).setOrigin(0.5);
 
-        // --- MUDANÇA 2: Instruções do Mini-game ---
-        this.controlsText = this.add.text(0, 0, 'CLIQUE PARA FALAR  •  CONHEÇA O DR. PIERRE FAUCHARD', {
+    
+         // --- MUDANÇA 2: Instruções do Mini-game ---
+        this.controlsText = this.add.text(0, 0, 'CLIQUE NO DENTINHO, FUJA DAS BACTERIAS E COLETE AS PASTINHAS', {
             fontFamily: 'Fredoka',
             fontSize: '16px',
             color: '#3d3d3d',
@@ -54,21 +55,19 @@ export class UIOdontologia extends Scene {
         // Ação do botão de sair
         this.exitButtonZone.on('pointerdown', () => {
 
-            // 1. Desliga tudo que for relacionado à Biologia
-            //this.scene.stop('BiologiaMinigame');
-            this.scene.stop('HubLabsOdontologia');
-            this.scene.stop('DialogueScene'); // Caso clique em sair no meio de uma conversa
+            // Emite um aviso para as outras cenas saberem que o botão foi clicado (segurança extra)
+            this.events.emit('btnVoltarClicked');
+
+            // 1. Desliga tudo que for relacionado à Odontologia
+            this.scene.stop('HubLabsOdontologia'); // Fecha a cena do laboratório (onde fica o NPC)
+            this.scene.stop('OdontologiaMinigame'); // <-- FECHA O MINIGAME!
+            this.scene.stop('DialogueScene'); // Fecha a caixa de diálogo se estiver aberta
             
             // 2. Religa a UI genérica (a que tem o botão rosa normal)
             this.scene.launch('UIScene');
             
-            // 3. Volta para a tela do carrossel principal!
+            // 3. Volta para a tela do carrossel principal (e encerra esta UIOdontologia automaticamente)
             this.scene.start('HubLabsScene');
-
-            // Você pode manter o reload (F5) ou usar os comandos do Phaser para voltar ao menu:
-            // this.scene.stop('BiologiaMinigame');
-            // this.scene.start('HubLabsScene');
-            //window.location.reload(); 
         });
 
         this.drawUI();

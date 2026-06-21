@@ -16,6 +16,8 @@ import { GameOverBio } from './scenes/GameOverBio';
 //Odontologia//
 import { HubLabsOdontologia } from './scenes/HubLabsOdontologia';
 import { UIOdontologia } from './scenes/overlays/UIOdontologia';
+import { OdontologiaMinigame } from './scenes/games/OdontologiaMinigame';
+import { GameOverOdonto } from './scenes/GameOverOdonto';
 
 
 //  Find out more information about the Game Config at:
@@ -33,6 +35,13 @@ const config: Phaser.Types.Core.GameConfig = {
     },
     // -------------------
 
+    physics: {
+        default: 'arcade',
+        arcade: {
+            debug: false // Mude para true se quiser ver as caixas de colisão durante os testes!
+        }
+    },
+
     //temos que inicar as cenas aqui para fazer funcionar
     scene: [
         Boot,
@@ -47,6 +56,8 @@ const config: Phaser.Types.Core.GameConfig = {
         UIBiologia,
         HubLabsOdontologia,
         UIOdontologia,
+        OdontologiaMinigame,
+        GameOverOdonto,
         DialogueScene
     ]
 }; 

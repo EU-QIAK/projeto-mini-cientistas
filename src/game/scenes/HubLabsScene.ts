@@ -52,11 +52,14 @@ export class HubLabsScene extends Scene {
         // Cria a interface do Popup (invisível no começo)
         this.createPopupUI();
 
-        // NOVO: Adiciona as setas indicativas do carrossel
+        // Adiciona as setas indicativas do carrossel
         this.createArrows();
 
-        // NOVO: Cria a barra de progresso com os rostinhos desbloqueados!
+        // Cria a barra de progresso com os rostinhos desbloqueados
         this.createProgressionIcons();
+
+        // NOVO: Adiciona a caixa de instrução no canto superior direito
+        this.createInstructionBox();
 
         // ==========================================
         // --- GERENCIAMENTO SEGURO DA MÚSICA ---
@@ -65,7 +68,6 @@ export class HubLabsScene extends Scene {
         // 1. Verifica se a música já existe e já está tocando. Se sim, não fazemos nada!
         // Isso evita que a música fique "dobrada" quando o jogador volta de um minigame.
         if (!this.bgMusic || !this.bgMusic.isPlaying) {
-
             // ATENÇÃO: Verifique se a chave 'Carrosel' é exatamente a mesma que está no Preloader.ts
             this.bgMusic = this.sound.add('Carrosel', { volume: 0.3, loop: true });
             this.bgMusic.play();
@@ -84,7 +86,6 @@ export class HubLabsScene extends Scene {
 
         // 2. Fica escutando para ver se o jogador acertou a sequência
         this.input.keyboard!.on('keycombomatch', (event: Phaser.Input.Keyboard.KeyCombo) => {
-
             // Verifica se o combo que deu 'match' é o de zerar
             if (event.keyCodes.toString() === comboZerar.keyCodes.toString()) {
                 console.log('Código secreto ativado! Zerando progresso...');
@@ -92,6 +93,7 @@ export class HubLabsScene extends Scene {
                 // Limpa o localStorage
                 localStorage.removeItem('unlockedCharacters');
                 localStorage.removeItem('biologiaRecorde');
+                localStorage.removeItem('odontoRecorde'); // Aproveitei para limpar o de odonto também!
 
                 // Recarrega a página para tudo voltar ao início
                 window.location.reload();
@@ -137,8 +139,6 @@ export class HubLabsScene extends Scene {
             const radius = bgHeight / 2;
 
             // MUDEI AQUI: Agora a tag usa a mesma altura que as setas (75% da tela)
-            // IMPORTANTE: Como o container principal já está centralizado (height/2),
-            // nós precisamos calcular a diferença para descer a tag pro lugar certo.
             const tagY = (this.scale.height * 0.77) - (this.scale.height / 2);
 
             const tagContainer = this.add.container(0, tagY);
@@ -193,7 +193,7 @@ export class HubLabsScene extends Scene {
                 // --- ATIVO: Fica Grande, Opaco e Parado ---
                 this.tweens.add({
                     targets: img,
-                    scale: 0.9, // <--- Maior que os outros! (Ajuste esse número se quiser ainda maior)
+                    scale: 0.9, 
                     alpha: 1,
                     duration: 400,
                     ease: 'Power2'
@@ -203,8 +203,8 @@ export class HubLabsScene extends Scene {
                 // --- INATIVO: Fica Pequeno e Semi-transparente ---
                 this.tweens.add({
                     targets: img,
-                    scale: 0.55, // <--- Menor que o principal
-                    alpha: 0.5,  // <--- Mais apagadinho
+                    scale: 0.55, 
+                    alpha: 0.5,  
                     duration: 400,
                     ease: 'Power2'
                 });
@@ -260,7 +260,6 @@ export class HubLabsScene extends Scene {
         }
     }
 
-    // --- NOVA FUNÇÃO: Abre o Popup em vez de ir direto ---
     private requestLabAccess() {
         if (this.isPopupOpen) return;
         this.isPopupOpen = true;
@@ -281,14 +280,12 @@ export class HubLabsScene extends Scene {
         });
     }
 
-    // --- NOVA FUNÇÃO: O Código antigo de transição veio parar aqui ---
     private confirmLabAccess() {
         const labName = this.cards[this.currentIndex].getData('name');
 
         if (labName === 'Biologia') {
             this.scene.start('HubLabsBiologia');
         } else if (labName === 'Odontologia') {
-            // --- CORREÇÃO AQUI: Mudando a chave para o nome completo ---
             this.scene.start('HubLabsOdontologia');
         } else if (labName === 'Física' || labName === 'Química') {
             this.scene.start('Game');
@@ -312,7 +309,6 @@ export class HubLabsScene extends Scene {
         });
     }
 
-    // --- NOVA FUNÇÃO: Desenha toda a interface do Popup ---
     private createPopupUI() {
         const { width, height } = this.scale;
 
@@ -376,7 +372,6 @@ export class HubLabsScene extends Scene {
         this.popupContainer.setActive(false).setVisible(false);
     }
 
-    // --- NOVA FUNÇÃO: SETAS ANIMADAS DO CARROSSEL ---
     private createArrows() {
         const { width, height } = this.scale;
 
@@ -387,13 +382,13 @@ export class HubLabsScene extends Scene {
         const leftArrow = this.add.image(width * 0.15, arrowY, 'seta-esquerda')
             .setInteractive({ useHandCursor: true })
             .setDepth(50)
-            .setScale(0.35); // <--- MUDEI AQUI: Diminui a seta para 60% do tamanho
+            .setScale(0.35);
 
         // --- Seta Direita ---
         const rightArrow = this.add.image(width * 0.85, arrowY, 'seta-direita')
             .setInteractive({ useHandCursor: true })
             .setDepth(50)
-            .setScale(0.35); // <--- MUDEI AQUI: Diminui a seta para 60% do tamanho
+            .setScale(0.35);
 
         // --- Eventos de Clique ---
         leftArrow.on('pointerdown', () => {
@@ -407,7 +402,7 @@ export class HubLabsScene extends Scene {
         // --- Animação (Tween) para chamar atenção ---
         this.tweens.add({
             targets: leftArrow,
-            x: '-=20', // Move 10 pixels pra esquerda
+            x: '-=20', // Move 20 pixels pra esquerda
             duration: 800,
             yoyo: true,
             repeat: -1,
@@ -416,7 +411,7 @@ export class HubLabsScene extends Scene {
 
         this.tweens.add({
             targets: rightArrow,
-            x: '+=20', // Move 10 pixels pra direita
+            x: '+=20', // Move 20 pixels pra direita
             duration: 800,
             yoyo: true,
             repeat: -1,
@@ -424,7 +419,6 @@ export class HubLabsScene extends Scene {
         });
     }
 
-    // --- NOVA FUNÇÃO: ÁLBUM DE PROGRESSO (ROSTINHOS) ---
     private createProgressionIcons() {
         const { width, height } = this.scale;
 
@@ -440,7 +434,7 @@ export class HubLabsScene extends Scene {
         // 2. Configurações de layout responsivo
         const paddingX = 100;
         const startY = headerHeight + 50; // Posiciona 50px abaixo da barra da UIScene
-        const gap = 130;                   // Espaço entre os centros dos ícones
+        const gap = 130;                  // Espaço entre os centros dos ícones
         const iconTargetScale = 0.20;     // Tamanho final do rostinho
 
         unlockedArray.forEach((charName, index) => {
@@ -466,11 +460,9 @@ export class HubLabsScene extends Scene {
                 delay: index * 150,
                 ease: 'Back.easeOut',
                 onStart: () => {
-                    // Ajuste fino da escala final do ícone dentro da tween
                     icon.setScale(0);
                 },
                 onUpdate: (tween) => {
-                    // Dizemos ao TypeScript: "Pode confiar, isso aqui é um número!"
                     const progress = tween.getValue() as number;
                     icon.setScale(progress * iconTargetScale);
                 }
@@ -478,5 +470,50 @@ export class HubLabsScene extends Scene {
         });
     }
 
+    // --- NOVA FUNÇÃO: Mensagem instrutiva de Coleção ---
+    private createInstructionBox() {
+        const { width, height } = this.scale;
+        
+        // Posição: Canto superior direito, acompanhando a altura das medalhinhas de progresso
+        const headerHeight = height * 0.15;
+        const startY = headerHeight + 20; 
+        const paddingRight = 40; // Distância da borda direita da tela
 
+        // Quebrei o texto em duas linhas para a caixa não ficar comprida demais
+        const msgText = this.add.text(0, 0, 'Aprenda e colecione os Ícones dos Cientistas históricos!', {
+            fontFamily: 'Fredoka',
+            fontSize: '18px',
+            color: '#3d3d3d',
+            align: 'right',
+            fontStyle: 'bold'
+        }).setOrigin(1, 0); // Alinhado pela direita
+
+        msgText.setPosition(width - paddingRight - 15, startY + 15);
+
+        // Criando a caixa de fundo com base no tamanho do texto
+        const boxWidth = msgText.width + 30;
+        const boxHeight = msgText.height + 30;
+        const boxX = width - paddingRight - boxWidth;
+        const boxY = startY;
+
+        const bg = this.add.graphics();
+        bg.fillStyle(0xffffff, 0.85); // Branco suave
+        bg.fillRoundedRect(boxX, boxY, boxWidth, boxHeight, 12);
+        bg.lineStyle(3, 0x87ceeb);    // Bordinha azul igual à barra de tempo
+        bg.strokeRoundedRect(boxX, boxY, boxWidth, boxHeight, 12);
+
+        // Agrupa tudo em um container pra poder animar a entrada junto
+        const containerBox = this.add.container(0, -15, [bg, msgText]);
+        containerBox.setAlpha(0);
+
+        // Desliza suavemente pra baixo e aparece
+        this.tweens.add({
+            targets: containerBox,
+            alpha: 1,
+            y: 0,
+            duration: 800,
+            ease: 'Power2',
+            delay: 300 // Espera um pouquinho a tela carregar pra chamar a atenção
+        });
+    }
 }

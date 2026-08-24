@@ -18,6 +18,7 @@ import { HubLabsOdontologia } from './scenes/HubLabsOdontologia';
 import { UIOdontologia } from './scenes/overlays/UIOdontologia';
 import { OdontologiaMinigame } from './scenes/games/OdontologiaMinigame';
 import { GameOverOdonto } from './scenes/GameOverOdonto';
+import { AlbumScene } from './scenes/AlbumScene';
 
 
 //  Find out more information about the Game Config at:
@@ -49,6 +50,7 @@ const config: Phaser.Types.Core.GameConfig = {
         UIScene,
         MainGame,
         GameOver,
+        AlbumScene,
         HubLabsScene,
         HubLabsBiologia,
         BiologiaMinigame,
@@ -56,6 +58,7 @@ const config: Phaser.Types.Core.GameConfig = {
         UIBiologia,
         HubLabsOdontologia,
         UIOdontologia,
+        //HubLabsQuimica,
         OdontologiaMinigame,
         GameOverOdonto,
         DialogueScene

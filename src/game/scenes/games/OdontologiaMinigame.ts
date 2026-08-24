@@ -124,11 +124,13 @@ export class OdontologiaMinigame extends Scene {
         this.enemiesGroup = this.physics.add.group();
         this.collectiblesGroup = this.physics.add.group();
 
-        for (let i = 0; i < 3; i++) {
+        // FACILITADO: Aumentamos a pasta inicial para 4
+        for (let i = 0; i < 4; i++) {
             this.spawnCollectible();
         }
 
-        for (let i = 0; i < 6; i++) {
+        // FACILITADO: Começa apenas com 3 bactérias em vez de 6
+        for (let i = 0; i < 3; i++) {
             this.spawnEnemy();
         }
 
@@ -206,8 +208,9 @@ export class OdontologiaMinigame extends Scene {
             const bacteria = bactObj as Physics.Arcade.Sprite;
             const distanceToPlayer = PhaserMath.Distance.Between(bacteria.x, bacteria.y, this.player.x, this.player.y);
 
-            if (distanceToPlayer < 250) {
-                const chaseSpeed = bacteria.getData('speed') || 100;
+            // FACILITADO: Reduzido o raio de perseguição de 250 para 150
+            if (distanceToPlayer < 150) {
+                const chaseSpeed = bacteria.getData('speed') || 80;
                 this.physics.moveToObject(bacteria, this.player, chaseSpeed);
                 bacteria.rotation = PhaserMath.Angle.Between(bacteria.x, bacteria.y, this.player.x, this.player.y);
             } else {
@@ -266,13 +269,14 @@ export class OdontologiaMinigame extends Scene {
         bacteria.setCollideWorldBounds(true);
         bacteria.setBounce(1, 1);
 
-        let vx = PhaserMath.Between(-100, 100);
-        let vy = PhaserMath.Between(-100, 100);
-        if (vx === 0) vx = 50;
-        if (vy === 0) vy = 50;
+        let vx = PhaserMath.Between(-80, 80);
+        let vy = PhaserMath.Between(-80, 80);
+        if (vx === 0) vx = 40;
+        if (vy === 0) vy = 40;
         bacteria.setVelocity(vx, vy);
 
-        bacteria.setData('speed', PhaserMath.Between(90, 160));
+        // FACILITADO: Velocidade aleatória bem menor (entre 50 e 100 em vez de 90 e 160)
+        bacteria.setData('speed', PhaserMath.Between(50, 100));
     }
 
     // ==========================================
@@ -288,7 +292,8 @@ export class OdontologiaMinigame extends Scene {
 
         this.spawnCollectible();
 
-        if (this.score % 10 === 0) {
+        // FACILITADO: Adiciona uma nova bactéria só a cada 15 pontos (antes era 10)
+        if (this.score > 0 && this.score % 15 === 0) {
             this.spawnEnemy();
         }
     }

@@ -2,7 +2,7 @@ import { Scene } from 'phaser';
 
 export class HubLabsScene extends Scene {
     private labsCards = [
-        { name: 'Biologia', image: 'labs/biologia' },
+        { name: 'Biologia', image: 'labs/biologia' },     // <--- Agora é o primeiro!
         { name: 'Odontologia', image: 'labs/odonto' },
         { name: 'Química', image: 'labs/quimica' },
         { name: 'Física', image: 'labs/fisica' },
@@ -12,14 +12,11 @@ export class HubLabsScene extends Scene {
 
     private container!: Phaser.GameObjects.Container;
     private cards: Phaser.GameObjects.Container[] = [];
-    
-    // Inicia no 2 (Biologia) apenas na primeira vez que o jogo carrega
-    private currentIndex = 2; 
-    
+    private currentIndex = 2;
     private isAnimating = false;
     private cardWidth = 430;
 
-    // --- VARIÁVEIS DO POPUP ---
+    // --- NOVAS VARIÁVEIS DO POPUP ---
     private isPopupOpen = false;
     private popupContainer!: Phaser.GameObjects.Container;
     private popupText!: Phaser.GameObjects.Text;
@@ -33,10 +30,6 @@ export class HubLabsScene extends Scene {
 
     create() {
         this.cards = [];
-        
-        // AQUI ESTAVA O PROBLEMA! Removemos o "this.currentIndex = 2;" 
-        // Agora ele lembra em qual lab você estava quando voltar do Álbum!
-        
         this.isAnimating = false;
         this.isPopupOpen = false;
 
@@ -294,7 +287,10 @@ export class HubLabsScene extends Scene {
             this.scene.start('HubLabsBiologia');
         } else if (labName === 'Odontologia') {
             this.scene.start('HubLabsOdontologia');
-        } else if (labName === 'Física' || labName === 'Química') {
+        } else if (labName === 'Química') {
+            // ---> AQUI ESTÁ A CORREÇÃO: Encaminha direto para a cena da Química!
+            this.scene.start('HubLabsQuimica');
+        } else if (labName === 'Física') {
             this.scene.start('Game');
         } else {
             console.log(`${labName} em desenvolvimento!`);

@@ -110,8 +110,8 @@ export class Preloader extends Scene {
         this.load.image('julia', 'characters/julia/julia-scene-pensitive.png'); // Ajuste o nome/caminho se necessário
         this.load.image('pasteur', 'characters/pasteur/pasteur-normal.png');
         this.load.image('pierre', 'characters/pierre/Pierre Fauchard-normal.png');
+        this.load.image('Marie', 'characters/Marie/Marie Curie-normal.png');
         
-
         // Diálogos
         this.load.json('tutorial-script', 'dialogues/tutorial-sistema.json');
 
@@ -124,7 +124,11 @@ export class Preloader extends Scene {
         this.load.json('odontologia-intro', 'dialogues/odontologia-intro.json');
         this.load.json('odontologia-apresentacao', 'dialogues/odontologia-apresentacao.json');
         this.load.json('odontologia-final', 'dialogues/odontologia-final.json');
-        
+
+        //química
+        this.load.json('quimica-intro', 'dialogues/quimica-intro.json');
+        this.load.json('quimica-final', 'dialogues/quimica-final.json');
+
 
         // Portraits
         //Julia
@@ -134,12 +138,14 @@ export class Preloader extends Scene {
         //pastuer
         this.load.image('characters/pasteur/pasteur-portrait.png', 'characters/pasteur/pasteur-portrait.png');
         this.load.image('characters/pasteur/pasteur-serio.png', 'characters/pasteur/pasteur-serio.png');
-        
+
         //pierre
         this.load.image('characters/pierre/pierre-normal.png', 'characters/pierre/pierre-normal.png');
         this.load.image('characters/pierre/pierre-feliz.png', 'characters/pierre/pierre-feliz.png');
 
-        
+        //marie
+        this.load.image('characters/Marie/Marie-normal.png', 'characters/Marie/Marie-normal.png');
+        this.load.image('characters/Marie/Marie-feliz.png', 'characters/Marie/Marie-feliz.png');
 
         // Sons
         this.load.audio('click', 'sounds/click.wav');

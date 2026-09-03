@@ -20,6 +20,11 @@ import { OdontologiaMinigame } from './scenes/games/OdontologiaMinigame';
 import { GameOverOdonto } from './scenes/GameOverOdonto';
 import { AlbumScene } from './scenes/AlbumScene';
 
+//Quimica//
+import { HubLabsQuimica } from './scenes/HubLabsQuimica';
+import { UIQuimica } from './scenes/overlays/UIQuimica';
+
+
 
 //  Find out more information about the Game Config at:
 //  https://docs.phaser.io/api-documentation/typedef/types-core#gameconfig
@@ -58,9 +63,10 @@ const config: Phaser.Types.Core.GameConfig = {
         UIBiologia,
         HubLabsOdontologia,
         UIOdontologia,
-        //HubLabsQuimica,
         OdontologiaMinigame,
         GameOverOdonto,
+        HubLabsQuimica,
+        UIQuimica,
         DialogueScene
     ]
 }; 

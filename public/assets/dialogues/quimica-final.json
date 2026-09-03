@@ -1,0 +1,40 @@
+{
+    "actors": {
+        "left": {
+            "name": "Júlia",
+            "texture": "characters/julia/julia-portrait.png"
+        },
+        "right": {
+            "name": "Marie Curie",
+            "texture": "characters/marie/marie-portrait.png"
+        }
+    },
+    "nodes": {
+        "start": {
+            "speaker": "right",
+            "text": "Formidable! Você combinou os elementos com perfeição e formou novas substâncias com sucesso!",
+            "next": "reacao_julia"
+        },
+        "reacao_julia": {
+            "speaker": "left",
+            "text": "Foi incrível! Eu adorei ver os átomos se juntando para criar as gotas de água e as bolhas de gás!",
+            "changeTexture": "characters/julia/julia-feliz.png",
+            "next": "licao_marie"
+        },
+        "licao_marie": {
+            "speaker": "right",
+            "text": "Na química, tudo ao nosso redor é criado através da junção de elementos. Nós apenas descobrimos como eles gostam de se abraçar.",
+            "next": "entrega_medalha"
+        },
+        "entrega_medalha": {
+            "speaker": "right",
+            "text": "Como recompensa pelo seu brilhantismo, lhe entrego a medalha de Cientista das Moléculas. Guarde meu ícone no seu Álbum!",
+            "next": "fim"
+        },
+        "fim": {
+            "speaker": "right",
+            "text": "Continue sempre questionando e explorando as reações do mundo. Até logo!",
+            "next": "end"
+        }
+    }
+}

@@ -1,44 +1,43 @@
 import { Scene } from 'phaser';
 
-export class HubLabsBiologia extends Scene {
+export class HubLabsQuimica extends Scene {
     private background!: Phaser.GameObjects.Image;
 
     // Containers para posicionamento responsivo e Imagens para animações
     private juliaContainer!: Phaser.GameObjects.Container;
     private juliaImg!: Phaser.GameObjects.Image;
-    // ELEMENTOS DA JÚLIA MANTIDOS
     private juliaThoughtBalloon!: Phaser.GameObjects.Image;
     private juliaThoughtText!: Phaser.GameObjects.Text;
 
-    private pasteurContainer!: Phaser.GameObjects.Container;
-    private pasteurImg!: Phaser.GameObjects.Image;
+    private marieContainer!: Phaser.GameObjects.Container;
+    private marieImg!: Phaser.GameObjects.Image;
 
     private instructionText!: Phaser.GameObjects.Text;
     private textBgGraphics!: Phaser.GameObjects.Graphics;
 
     // Variáveis para guardar as posições finais calculadas pelo drawLayout
     private finalJuliaX = 0;
-    private finalPasteurX = 0;
+    private finalMarieX = 0;
 
     // --- VARIÁVEL DE ÁUDIO E EFEITO ---
     private bgMusic!: Phaser.Sound.BaseSound;
-    private pasteurGlow!: Phaser.FX.Glow; // <-- NOVO: Guardamos o brilho aqui para poder animá-lo
+    private marieGlow!: Phaser.FX.Glow;
 
     constructor() {
-        super('HubLabsBiologia');
+        super('HubLabsQuimica');
     }
 
     create() {
         this.scene.stop('UIScene');
-        this.scene.launch('UIBiologia');
+        this.scene.launch('UIQuimica');
 
         // ==========================================
         // --- GERENCIAMENTO SEGURO DA MÚSICA ---
         // ==========================================
-        if (!this.bgMusic || !this.bgMusic.isPlaying) {
-            this.bgMusic = this.sound.add('BiologiaMinigame', { volume: 0.3, loop: true });
+        /*if (!this.bgMusic || !this.bgMusic.isPlaying) {
+            this.bgMusic = this.sound.add('QuimicaMinigame', { volume: 0.3, loop: true });
             this.bgMusic.play();
-        }
+        }*/
         // ==========================================
 
         const { width, height } = this.scale;
@@ -46,6 +45,7 @@ export class HubLabsBiologia extends Scene {
         // 1. Fundo do Laboratório (Sempre tela cheia)
         this.background = this.add.image(width / 2, height / 2, 'backgrounds/menu-laboratorio');
         this.background.postFX.addBlur(0, 2, 2, 1);
+        this.background.setTint(0xcce5ff); // Tom levemente azul/esverdeado para Química
 
         // 2. Criação dos Elementos
 
@@ -54,9 +54,9 @@ export class HubLabsBiologia extends Scene {
 
         this.juliaThoughtBalloon = this.add.image(0, 0, 'balao-pensamento').setOrigin(0.5, 1);
 
-        this.juliaThoughtText = this.add.text(0, 0, 'quem é ele?', {
+        this.juliaThoughtText = this.add.text(0, 0, 'quem é ela?', {
             fontFamily: 'Fredoka',
-            color: '#3d3d3d', 
+            color: '#3d3d3d',
             align: 'center',
             fontStyle: 'italic'
         }).setOrigin(0.5);
@@ -65,35 +65,33 @@ export class HubLabsBiologia extends Scene {
         this.juliaContainer = this.add.container(0, 0, [this.juliaImg, this.juliaThoughtBalloon, this.juliaThoughtText]);
 
 
-        // --- PASTEUR ---
-        this.pasteurImg = this.add.image(0, 0, 'pasteur').setOrigin(0.5, 1);
+        // --- MARIE CURIE ---
+        this.marieImg = this.add.image(0, 0, 'Marie').setOrigin(0.5, 1);
 
-        const corRGBPasteur = Phaser.Display.Color.GetColor(15, 77, 147);
+        // Brilho verde-água radioativo
+        const corRGB = Phaser.Display.Color.GetColor(46, 204, 113);
+        this.marieGlow = this.marieImg.postFX.addGlow(corRGB, 2, 0, false, 0.1, 12);
 
-        // <-- NOVO: Salvamos o efeito na nossa variável
-        this.pasteurGlow = this.pasteurImg.postFX.addGlow(corRGBPasteur, 2, 0, false, 0.1, 12);
+        // Container apenas com a imagem da Marie (sem balão)
+        this.marieContainer = this.add.container(0, 0, [this.marieImg]);
 
-        // Container apenas com a imagem do Pasteur (sem balão)
-        this.pasteurContainer = this.add.container(0, 0, [this.pasteurImg]);
-
-        // Interação no Pasteur.
-        this.pasteurImg.setInteractive({ cursor: 'pointer', pixelPerfect: true });
+        // Interação na Marie
+        this.marieImg.setInteractive({ cursor: 'pointer', pixelPerfect: true });
 
 
         // --- TEXTO DE INSTRUÇÃO ---
         this.textBgGraphics = this.add.graphics();
-        this.instructionText = this.add.text(0, 0, 'Clique no Louis Pasteur para começar a aventura!', {
+        this.instructionText = this.add.text(0, 0, 'Clique na Marie Curie para começar a aventura!', {
             fontFamily: 'Fredoka',
-            color: 'rgb(15, 77, 147)',
+            color: 'rgb(46, 204, 113)',
             align: 'center'
         }).setOrigin(0.5);
 
-        // Esconde o texto inicialmente (aparecerá após a entrada dos personagens)
         this.instructionText.setAlpha(0);
         this.textBgGraphics.setAlpha(0);
 
 
-        // 3. Aplica o Layout Responsivo (Calcula as posições finais)
+        // 3. Aplica o Layout Responsivo (Calcula as posições finais com as métricas exatas)
         this.drawLayout();
 
         // 4. Se a tela mudar de tamanho, recalcula tudo
@@ -101,78 +99,72 @@ export class HubLabsBiologia extends Scene {
 
 
         // ==========================================
-        // --- LÓGICA DE ENTRADA (MÁGICA) ---
+        // --- LÓGICA DE ENTRADA ---
         // ==========================================
 
         this.juliaContainer.setX(-width * 0.5).setAlpha(0);
-        this.pasteurContainer.setX(width * 1.5).setAlpha(0);
+        this.marieContainer.setX(width * 1.5).setAlpha(0);
 
-        // 2. Tweens de Entrada (Fade-in + Slide-in)
         this.tweens.add({
             targets: this.juliaContainer,
-            x: this.finalJuliaX, 
+            x: this.finalJuliaX,
             alpha: 1,
             duration: 1200,
-            ease: 'Cubic.easeOut' 
+            ease: 'Cubic.easeOut'
         });
 
         this.tweens.add({
-            targets: this.pasteurContainer,
-            x: this.finalPasteurX, 
+            targets: this.marieContainer,
+            x: this.finalMarieX,
             alpha: 1,
             duration: 1200,
-            delay: 300, 
+            delay: 300,
             ease: 'Cubic.easeOut',
             onComplete: () => {
                 this.startSceneAnimations();
             }
         });
 
-        // --- INTERAÇÕES DO PASTEUR (Mantidas) ---
-        this.pasteurImg.on('pointerover', () => this.pasteurImg.setTint(0xffffff));
-        this.pasteurImg.on('pointerout', () => this.pasteurImg.clearTint());
+        // --- INTERAÇÕES DA MARIE ---
+        this.marieImg.on('pointerover', () => this.marieImg.setTint(0xffffff));
+        this.marieImg.on('pointerout', () => this.marieImg.clearTint());
 
-        this.pasteurImg.on('pointerdown', () => {
-            this.pasteurImg.disableInteractive();
+        this.marieImg.on('pointerdown', () => {
+            this.marieImg.disableInteractive();
 
-            const scriptIntro = this.cache.json.get('biologia-intro-script');
+            const scriptIntro = this.cache.json.get('quimica-intro');
 
+            if (!scriptIntro) {
+                console.error("ERRO: O arquivo quimica-intro.json não foi encontrado!");
+                this.scene.start('QuimicaMinigame');
+                return;
+            }
+
+            // Pausa o laboratório (animações do fundo, etc)
             this.scene.pause();
 
+            // Lança a cena de diálogo da Química
             this.scene.launch('DialogueScene', {
                 script: scriptIntro,
-                parentScene: 'HubLabsBiologia',
+                parentScene: 'HubLabsQuimica',
                 onComplete: () => {
-                    console.log("Diálogo 1 acabou! Fechando cena de diálogo...");
+                    console.log("Diálogo da Marie acabou! Partiu jogo!");
 
+                    // 1. Fecha a cena de diálogo atual
                     this.scene.stop('DialogueScene');
 
+                    // 2. Dá um pequeno tempo e já lança o minigame direto (pois a Química só tem 1 arquivo de diálogo no início)
                     this.time.delayedCall(200, () => {
-
-                        const scriptApresentacao = this.cache.json.get('biologia-apresentacao');
-
-                        if (!scriptApresentacao) {
-                            console.error("ERRO: O arquivo biologia-apresentacao.json não foi encontrado!");
-                            return;
-                        }
-
-                        console.log("Iniciando Diálogo 2 (Apresentação)...");
-                        this.scene.launch('DialogueScene', {
-                            script: scriptApresentacao,
-                            parentScene: 'HubLabsBiologia',
-                            onComplete: () => {
-                                console.log("Apresentação acabou! Partiu jogo!");
-                                this.scene.stop('HubLabsBiologia');
-                                this.scene.start('BiologiaMinigame');
-                            }
-                        });
-
-                    }); // Fim do delay
+                        this.scene.stop('HubLabsQuimica');
+                        // Garante que a UI de química continue no minigame
+                        this.scene.launch('UIQuimica'); 
+                        this.scene.start('QuimicaMinigame');
+                    }); 
                 }
             });
         });
 
-        // --- LIMPEZA AUTOMÁTICA DO ÁUDIO AO SAIR DA CENA ---
+        // --- LIMPEZA AUTOMÁTICA DO ÁUDIO ---
         this.events.once('shutdown', () => {
             if (this.bgMusic && this.bgMusic.isPlaying) {
                 this.bgMusic.stop();
@@ -188,10 +180,10 @@ export class HubLabsBiologia extends Scene {
             duration: 900
         });
 
-        // 2. <-- NOVO: Efeito de pulso APENAS na força (outerStrength) do Brilho do Pasteur
+        // 2. Efeito de pulso APENAS na força (outerStrength) do Brilho
         this.tweens.add({
-            targets: this.pasteurGlow,
-            outerStrength: 7, 
+            targets: this.marieGlow,
+            outerStrength: 7,
             duration: 800,
             yoyo: true,
             repeat: -1,
@@ -201,16 +193,16 @@ export class HubLabsBiologia extends Scene {
         // 3. Bounce Contínuo no Balão de Pensamento da Júlia
         this.tweens.add({
             targets: [this.juliaThoughtBalloon, this.juliaThoughtText],
-            y: '-=10', 
-            duration: 600, 
+            y: '-=10',
+            duration: 600,
             yoyo: true,
             repeat: -1,
-            ease: 'Sine.easeInOut' 
+            ease: 'Sine.easeInOut'
         });
 
-        // 4. Efeito de Respiração (Júlia e Pasteur flutuam muito levemente)
+        // 4. Efeito de Respiração (Júlia e Marie flutuam muito levemente)
         this.tweens.add({
-            targets: [this.juliaImg, this.pasteurImg],
+            targets: [this.juliaImg, this.marieImg],
             y: 10,
             duration: 2000,
             yoyo: true,
@@ -236,23 +228,23 @@ export class HubLabsBiologia extends Scene {
         // ==========================================
         const baseCharHeight = safeHeight * 0.45;
 
-        // 1. PASTEUR (Fundo Direita)
-        const pasteurTargetHeight = baseCharHeight * 1.6;
-        const pasteurScale = pasteurTargetHeight / this.pasteurImg.height;
-        this.pasteurImg.setScale(pasteurScale);
+        // 1. MARIE CURIE (Fundo Direita)
+        const marieTargetHeight = baseCharHeight * 1.6;
+        const marieScale = marieTargetHeight / this.marieImg.height;
+        this.marieImg.setScale(marieScale);
 
-        const pasteurFloorY = safeY + (safeHeight * 0.90);
-        this.finalPasteurX = width * 0.75; 
-        this.pasteurContainer.y = pasteurFloorY; 
+        const marieFloorY = safeY + (safeHeight * 0.90);
+        this.finalMarieX = width * 0.75;
+        this.marieContainer.y = marieFloorY;
 
-        // 2. JÚLIA (Frente Esquerda)
+        // 2. JÚLIA (Red - Frente Esquerda)
         const juliaTargetHeight = baseCharHeight * 1.85;
         const juliaScale = juliaTargetHeight / this.juliaImg.height;
         this.juliaImg.setScale(juliaScale);
 
         const juliaFloorY = safeY + safeHeight;
-        this.finalJuliaX = width * 0.25; 
-        this.juliaContainer.y = juliaFloorY; 
+        this.finalJuliaX = width * 0.25;
+        this.juliaContainer.y = juliaFloorY;
 
         // ==========================================
         // BALÃO E TEXTO DA JÚLIA

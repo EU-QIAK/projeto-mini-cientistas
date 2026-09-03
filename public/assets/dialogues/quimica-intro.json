@@ -1,0 +1,50 @@
+{
+    "actors": {
+        "left": {
+            "name": "Júlia",
+            "texture": "characters/julia/julia-portrait.png"
+        },
+        "right": {
+            "name": "Marie Curie",
+            "texture": "characters/Marie/Marie-normal.png"
+        }
+    },
+    "nodes": {
+        "start": {
+            "speaker": "right",
+            "changeTexture": "characters/Marie/Marie-feliz.png",
+            "text": "Bonjour, Júlia! Bem-vinda ao laboratório de Química. Hoje vamos brincar de combinar elementos para criar substâncias incríveis!",
+            "next": "explicacao_1"
+        },
+        "explicacao_1": {
+            "speaker": "right",
+            "changeTexture": "characters/Marie/Marie-normal.png",
+            "text": "Você sabia que o ar que respiramos tem Gás Oxigênio (O₂) e Dióxido de Carbono (CO₂)? E que a água que bebemos é feita de H₂O?",
+            "next": "reacao_julia"
+        },
+        "reacao_julia": {
+            "speaker": "left",
+            "changeTexture": "characters/julia/julia-feliz.png",
+            "text": "Sempre ouvi falar de H₂O! Quer dizer que a água é só uma mistura de letrinhas?",
+            "next": "explicacao_2"
+        },
+        "explicacao_2": {
+            "speaker": "right",
+            "changeTexture": "characters/Marie/Marie-feliz.png",
+            "text": "Hahaha, quase isso! Na verdade, essas letras representam os Átomos, os 'blocos de montar' da natureza! 'H' para Hidrogênio, 'O' para Oxigênio e 'C' para Carbono.",
+            "next": "instrucao_jogo"
+        },
+        "instrucao_jogo": {
+            "speaker": "right",
+            "changeTexture": "characters/Marie/Marie-normal.png",
+            "text": "Sua missão é capturar os átomos flutuantes e colocá-los no nosso frasco. Lembre-se: 2 de Hidrogênio e 1 de Oxigênio formam Água (H₂O). Já 1 de Carbono e 2 de Oxigênio formam o CO₂!",
+            "next": "despedida_intro"
+        },
+        "despedida_intro": {
+            "speaker": "right",
+            "changeTexture": "characters/Marie/Marie-feliz.png",
+            "text": "Preste bastante atenção nas receitas que vão aparecer na tela. Pegue seus óculos de proteção e vamos começar a reação!",
+            "next": "end"
+        }
+    }
+}

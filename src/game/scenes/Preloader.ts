@@ -80,6 +80,7 @@ export class Preloader extends Scene {
         this.load.image('Julia-Icone', 'ui/Julia-Icone.png');
         this.load.image('Pasteur-Icone', 'ui/Pasteur-Icone.png');
         this.load.image('Pierre-Icone', 'ui/Pierre-Icone.png');
+        this.load.image('Marie-Icone', 'ui/Marie-Icone.png');
 
         // Labs
         this.load.image('labs/quimica', 'labs/quimica.png');
@@ -105,13 +106,20 @@ export class Preloader extends Scene {
         this.load.image('pasta', 'objects/Odonto/pasta.png');
         this.load.image('fundo-odontologia', 'backgrounds/fundo-odontologia.png');
 
+        //// --- ASSETS DO MINIGAME DE QUIMICA ---
+        this.load.image('atomo-H', 'objects/Quimica/atomo-H.png');
+        this.load.image('atomo-O', 'objects/Quimica/atomo-O.png');
+        this.load.image('atomo-C', 'objects/Quimica/atomo-C.png');
+        this.load.image('bolha', 'objects/Quimica/bolha.png');
+        this.load.image('gota-agua', 'objects/Quimica/gota-agua.png');
+
 
         //carregando os sprits dos personagens
         this.load.image('julia', 'characters/julia/julia-scene-pensitive.png'); // Ajuste o nome/caminho se necessário
         this.load.image('pasteur', 'characters/pasteur/pasteur-normal.png');
         this.load.image('pierre', 'characters/pierre/Pierre Fauchard-normal.png');
         this.load.image('Marie', 'characters/Marie/Marie Curie-normal.png');
-        
+
         // Diálogos
         this.load.json('tutorial-script', 'dialogues/tutorial-sistema.json');
 
@@ -128,6 +136,7 @@ export class Preloader extends Scene {
         //química
         this.load.json('quimica-intro', 'dialogues/quimica-intro.json');
         this.load.json('quimica-final', 'dialogues/quimica-final.json');
+        this.load.json('quimica-apresentacao', 'dialogues/quimica-apresentacao.json');
 
 
         // Portraits

@@ -13,37 +13,43 @@
         "start": {
             "speaker": "right",
             "changeTexture": "characters/Marie/Marie-feliz.png",
-            "text": "Bonjour, Júlia! Bem-vinda ao laboratório de Química. Hoje vamos brincar de combinar elementos para criar substâncias incríveis!",
-            "next": "explicacao_1"
+            "text": "Bonjour, jovem cientista! Bem-vinda ao Laboratório de Química. Eu sou Marie Curie!",
+            "next": "reacao_julia_surpresa"
         },
-        "explicacao_1": {
-            "speaker": "right",
-            "changeTexture": "characters/Marie/Marie-normal.png",
-            "text": "Você sabia que o ar que respiramos tem Gás Oxigênio (O₂) e Dióxido de Carbono (CO₂)? E que a água que bebemos é feita de H₂O?",
-            "next": "reacao_julia"
-        },
-        "reacao_julia": {
+        "reacao_julia_surpresa": {
             "speaker": "left",
             "changeTexture": "characters/julia/julia-feliz.png",
-            "text": "Sempre ouvi falar de H₂O! Quer dizer que a água é só uma mistura de letrinhas?",
-            "next": "explicacao_2"
+            "text": "Uau! A cientista genial que descobriu novos elementos e estudou a radioatividade?! Você é uma lenda, ganhou até dois Prêmios Nobel!",
+            "next": "marie_agradece"
         },
-        "explicacao_2": {
+        "marie_agradece": {
             "speaker": "right",
             "changeTexture": "characters/Marie/Marie-feliz.png",
-            "text": "Hahaha, quase isso! Na verdade, essas letras representam os Átomos, os 'blocos de montar' da natureza! 'H' para Hidrogênio, 'O' para Oxigênio e 'C' para Carbono.",
-            "next": "instrucao_jogo"
+            "text": "Oh, merci! Fico feliz que conheça meu trabalho. Mas sabe, o mais fascinante da ciência é a nossa curiosidade de descobrir do que o mundo é feito.",
+            "next": "explicacao_quimica"
         },
-        "instrucao_jogo": {
+        "explicacao_quimica": {
             "speaker": "right",
             "changeTexture": "characters/Marie/Marie-normal.png",
-            "text": "Sua missão é capturar os átomos flutuantes e colocá-los no nosso frasco. Lembre-se: 2 de Hidrogênio e 1 de Oxigênio formam Água (H₂O). Já 1 de Carbono e 2 de Oxigênio formam o CO₂!",
-            "next": "despedida_intro"
+            "text": "Aqui na química, nós estudamos as menores partes de tudo o que existe: os Átomos. Eles são como tijolinhos invisíveis.",
+            "next": "pergunta_julia"
         },
-        "despedida_intro": {
+        "pergunta_julia": {
+            "speaker": "left",
+            "changeTexture": "characters/julia/julia-feliz.png",
+            "text": "Tijolinhos? Quer dizer que se a gente juntar eles direitinho, dá pra montar as coisas da natureza, igual um bloco de montar?",
+            "next": "marie_confirma"
+        },
+        "marie_confirma": {
             "speaker": "right",
             "changeTexture": "characters/Marie/Marie-feliz.png",
-            "text": "Preste bastante atenção nas receitas que vão aparecer na tela. Pegue seus óculos de proteção e vamos começar a reação!",
+            "text": "Exatamente, Júlia! E quando juntamos átomos diferentes, criamos o que chamamos de Moléculas.",
+            "next": "instrucao_final"
+        },
+        "instrucao_final": {
+            "speaker": "right",
+            "changeTexture": "characters/Marie/Marie-normal.png",
+            "text": "Hoje vamos fazer um experimento incrível combinando elementos como Hidrogênio, Oxigênio e Carbono. Coloque seus óculos de proteção e venha comigo!",
             "next": "end"
         }
     }

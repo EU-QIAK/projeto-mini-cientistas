@@ -2,7 +2,7 @@ import { Scene } from 'phaser';
 
 export class HubLabsScene extends Scene {
     private labsCards = [
-        { name: 'Biologia', image: 'labs/biologia' },     // <--- Agora é o primeiro!
+        { name: 'Biologia', image: 'labs/biologia' },
         { name: 'Odontologia', image: 'labs/odonto' },
         { name: 'Química', image: 'labs/quimica' },
         { name: 'Física', image: 'labs/fisica' },
@@ -12,16 +12,19 @@ export class HubLabsScene extends Scene {
 
     private container!: Phaser.GameObjects.Container;
     private cards: Phaser.GameObjects.Container[] = [];
-    private currentIndex = 2;
-    private isAnimating = false;
-    private cardWidth = 430;
 
-    // --- NOVAS VARIÁVEIS DO POPUP ---
+    private currentIndex = 2;
+
+    private currentAngle: number = 0;
+    private targetAngle: number = 0;
+    private radiusX: number = 0;
+    private radiusY: number = 0;
+    private isAnimating = false;
+
     private isPopupOpen = false;
     private popupContainer!: Phaser.GameObjects.Container;
     private popupText!: Phaser.GameObjects.Text;
 
-    //variável de som
     private bgMusic!: Phaser.Sound.BaseSound;
 
     constructor() {
@@ -38,31 +41,28 @@ export class HubLabsScene extends Scene {
 
         const { width, height } = this.scale;
 
+        this.radiusX = width * 0.40;
+        this.radiusY = 0;
+
         const bg = this.add.image(width / 2, height / 2, 'backgrounds/menu-laboratorio');
         bg.setDisplaySize(width, height);
         bg.postFX.addBlur(0, 2, 2, 1);
 
-        this.container = this.add.container(width / 2, height / 2);
+        this.container = this.add.container(0, 0);
 
         this.setupCarousel();
         this.setupControls();
-        this.updateCarousel(false);
 
-        // Cria a interface do Popup (invisível no começo)
+        const step = (Math.PI * 2) / this.cards.length;
+        this.currentAngle = (Math.PI / 2) - (this.currentIndex * step);
+        this.targetAngle = this.currentAngle;
+
+        this.arrangeCards();
         this.createPopupUI();
-
-        // Adiciona as setas indicativas do carrossel
         this.createArrows();
 
-        // Cria a barra de progresso com os rostinhos desbloqueados
         this.createProgressionIcons();
-
-        // Caixa de instrução no canto superior direito
         this.createInstructionBox();
-
-        // ==========================================
-        // --- GERENCIAMENTO SEGURO DA MÚSICA ---
-        // ==========================================
 
         if (!this.bgMusic || !this.bgMusic.isPlaying) {
             if (this.cache.audio.exists('Carrosel')) {
@@ -70,10 +70,6 @@ export class HubLabsScene extends Scene {
                 this.bgMusic.play();
             }
         }
-
-        // ==========================================
-        // CÓDIGO SECRETO: Digite Z-E-R-A-R para limpar a memória
-        // ==========================================
 
         const comboZerar = this.input.keyboard!.createCombo('ZERAR', {
             resetOnWrongKey: true,
@@ -84,13 +80,23 @@ export class HubLabsScene extends Scene {
         this.input.keyboard!.on('keycombomatch', (event: Phaser.Input.Keyboard.KeyCombo) => {
             if (event.keyCodes.toString() === comboZerar.keyCodes.toString()) {
                 console.log('Código secreto ativado! Zerando progresso...');
-
                 localStorage.removeItem('unlockedCharacters');
                 localStorage.removeItem('biologiaRecorde');
                 localStorage.removeItem('odontoRecorde');
+                localStorage.removeItem('quimicaRecorde');
 
+                console.log('Jogo zerado com sucesso!');
                 window.location.reload();
             }
+        });
+
+        this.events.on('wake', () => {
+            this.isPopupOpen = false;
+            this.popupContainer.setActive(false).setVisible(false);
+
+            const step = (Math.PI * 2) / this.cards.length;
+            this.currentAngle = (Math.PI / 2) - (this.currentIndex * step);
+            this.arrangeCards();
         });
 
         this.events.once('shutdown', () => {
@@ -98,21 +104,13 @@ export class HubLabsScene extends Scene {
                 this.bgMusic.stop();
             }
         });
-
     }
 
     private setupCarousel() {
-        const items = [
-            ...this.labsCards.slice(-2),
-            ...this.labsCards,
-            ...this.labsCards.slice(0, 2)
-        ];
+        this.labsCards.forEach((lab) => {
+            const card = this.add.container(0, 0);
 
-        items.forEach((lab, i) => {
-            const xPos = (i * this.cardWidth);
-            const card = this.add.container(xPos, 0);
-
-            const img = this.add.image(0, 0, lab.image).setScale(0.7).setAlpha(0.8);
+            const img = this.add.image(0, 0, lab.image);
 
             const nameText = this.add.text(0, 0, lab.name, {
                 fontSize: '26px',
@@ -125,7 +123,7 @@ export class HubLabsScene extends Scene {
             const bgHeight = 85;
             const radius = bgHeight / 2;
 
-            const tagY = (this.scale.height * 0.77) - (this.scale.height / 2);
+            const tagY = 260;
 
             const tagContainer = this.add.container(0, tagY);
             const nameBg = this.add.graphics();
@@ -146,89 +144,49 @@ export class HubLabsScene extends Scene {
         });
     }
 
-    private updateCarousel(animate = true) {
-        if (this.isAnimating) return;
-
-        const targetX = (this.scale.width / 2) - (this.currentIndex * this.cardWidth);
-
-        if (animate) {
-            this.isAnimating = true;
-            this.tweens.add({
-                targets: this.container,
-                x: targetX,
-                duration: 500,
-                ease: 'Cubic.easeOut',
-                onComplete: () => {
-                    this.isAnimating = false;
-                    this.handleInfiniteLoop();
-                }
-            });
-        } else {
-            this.container.x = targetX;
-        }
+    private arrangeCards() {
+        const step = (Math.PI * 2) / this.cards.length;
+        const centerX = this.scale.width / 2;
+        const centerY = this.scale.height * 0.48;
 
         this.cards.forEach((card, i) => {
-            const isActive = i === this.currentIndex;
+            const angle = this.currentAngle + (i * step);
+
+            const x = centerX + Math.cos(angle) * this.radiusX;
+            const y = centerY + Math.sin(angle) * this.radiusY;
+
+            card.setPosition(x, y);
+
+            const depth = Math.sin(angle);
+            card.setDepth(depth * 100);
+
+            const scale = 0.45 + ((depth + 1) / 2) * 0.55;
+            const alpha = 0.2 + ((depth + 1) / 2) * 0.8;
+
             const img = card.list[0] as Phaser.GameObjects.Image;
             const tagGroup = card.list[1] as Phaser.GameObjects.Container;
 
-            this.tweens.killTweensOf(img);
-            this.tweens.killTweensOf(tagGroup);
+            img.setScale(scale);
+            img.setAlpha(alpha);
 
-            if (isActive) {
-                this.tweens.add({
-                    targets: img,
-                    scale: 1.0,
-                    alpha: 1,
-                    duration: 400,
-                    ease: 'Power2'
-                });
-                
-                this.tweens.add({
-                    targets: img,
-                    y: -15,
-                    duration: 1500,
-                    yoyo: true,
-                    repeat: -1, 
-                    ease: 'Sine.easeInOut'
-                });
-
-                this.tweens.add({ targets: tagGroup, alpha: 1, duration: 400 });
-            } else {
-                this.tweens.add({
-                    targets: img,
-                    scale: 0.55,
-                    alpha: 0.5,
-                    y: 0,
-                    duration: 400,
-                    ease: 'Power2'
-                });
-                
-                this.tweens.add({ targets: tagGroup, alpha: 0, duration: 200 });
-            }
+            const tagAlpha = Math.max(0, (depth - 0.8) * 5);
+            tagGroup.setAlpha(tagAlpha);
+            tagGroup.setScale(scale);
         });
     }
 
-    private handleInfiniteLoop() {
-        const len = this.labsCards.length;
-        if (this.currentIndex < 2) {
-            this.currentIndex += len;
-            this.updateCarousel(false);
-        } else if (this.currentIndex >= len + 2) {
-            this.currentIndex -= len;
-            this.updateCarousel(false);
-        }
-    }
-
     private setupControls() {
-        this.input.keyboard?.on('keydown-RIGHT', () => this.move(1));
-        this.input.keyboard?.on('keydown-LEFT', () => this.move(-1));
+        // --- TECLADO INVERTIDO PARA CORRESPONDER À VISÃO 3D ---
+        this.input.keyboard?.on('keydown-RIGHT', () => this.move(-1));
+        this.input.keyboard?.on('keydown-LEFT', () => this.move(1));
         this.input.keyboard?.on('keydown-ENTER', () => this.requestLabAccess());
 
         let startX = 0;
+        let isClickingUI = false;
 
-        this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+        this.input.on('pointerdown', (pointer: Phaser.Input.Pointer, currentlyOver: any[]) => {
             startX = pointer.x;
+            isClickingUI = currentlyOver.length > 0;
         });
 
         this.input.on('pointerup', (pointer: Phaser.Input.Pointer) => {
@@ -237,14 +195,12 @@ export class HubLabsScene extends Scene {
             const dragDistance = pointer.x - startX;
 
             if (dragDistance > 50) {
-                this.move(-1);
-            } else if (dragDistance < -50) {
                 this.move(1);
+            } else if (dragDistance < -50) {
+                this.move(-1);
             }
             else if (Math.abs(dragDistance) < 10) {
-                const localX = pointer.x - this.container.x;
-                const clickedIndex = Math.round(localX / this.cardWidth);
-                if (clickedIndex === this.currentIndex) {
+                if (!isClickingUI) {
                     this.requestLabAccess();
                 }
             }
@@ -256,10 +212,31 @@ export class HubLabsScene extends Scene {
     }
 
     private move(delta: number) {
-        if (!this.isAnimating && !this.isPopupOpen) {
-            this.currentIndex += delta;
-            this.updateCarousel();
-        }
+        if (this.isAnimating || this.isPopupOpen) return;
+
+        this.currentIndex += delta;
+        if (this.currentIndex < 0) this.currentIndex = this.cards.length - 1;
+        if (this.currentIndex >= this.cards.length) this.currentIndex = 0;
+
+        const step = (Math.PI * 2) / this.cards.length;
+        this.targetAngle = this.currentAngle - (delta * step);
+
+        this.isAnimating = true;
+
+        this.tweens.add({
+            targets: this,
+            currentAngle: this.targetAngle,
+            duration: 450,
+            ease: 'Cubic.easeOut',
+            onUpdate: () => {
+                this.arrangeCards();
+            },
+            onComplete: () => {
+                this.isAnimating = false;
+                this.currentAngle = this.targetAngle;
+                this.arrangeCards();
+            }
+        });
     }
 
     private requestLabAccess() {
@@ -288,7 +265,6 @@ export class HubLabsScene extends Scene {
         } else if (labName === 'Odontologia') {
             this.scene.start('HubLabsOdontologia');
         } else if (labName === 'Química') {
-            // ---> AQUI ESTÁ A CORREÇÃO: Encaminha direto para a cena da Química!
             this.scene.start('HubLabsQuimica');
         } else if (labName === 'Física') {
             this.scene.start('Game');
@@ -328,7 +304,7 @@ export class HubLabsScene extends Scene {
         const box = this.add.graphics();
         box.fillStyle(0xffffff, 1);
         box.fillRoundedRect(-boxWidth / 2, -boxHeight / 2, boxWidth, boxHeight, 20);
-        box.lineStyle(4, 0xff69b4); 
+        box.lineStyle(4, 0xff69b4);
         box.strokeRoundedRect(-boxWidth / 2, -boxHeight / 2, boxWidth, boxHeight, 20);
 
         const titleText = this.add.text(0, -boxHeight * 0.3, 'NOVA AVENTURA!', {
@@ -367,7 +343,8 @@ export class HubLabsScene extends Scene {
 
     private createArrows() {
         const { width, height } = this.scale;
-        const arrowY = height * 0.77;
+
+        const arrowY = height * 0.80;
 
         const leftArrow = this.add.image(width * 0.15, arrowY, 'seta-esquerda')
             .setInteractive({ useHandCursor: true })
@@ -379,12 +356,13 @@ export class HubLabsScene extends Scene {
             .setDepth(50)
             .setScale(0.35);
 
+        // --- SETAS DA TELA INVERTIDAS PARA CORRESPONDER À VISÃO 3D ---
         leftArrow.on('pointerdown', () => {
-            if (!this.isPopupOpen) this.move(-1);
+            if (!this.isPopupOpen) this.move(1); // Era -1
         });
 
         rightArrow.on('pointerdown', () => {
-            if (!this.isPopupOpen) this.move(1);
+            if (!this.isPopupOpen) this.move(-1); // Era 1
         });
 
         this.tweens.add({ targets: leftArrow, x: '-=20', duration: 800, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
@@ -401,9 +379,9 @@ export class HubLabsScene extends Scene {
         if (unlockedArray.length === 0) return;
 
         const paddingX = 100;
-        const startY = headerHeight + 50; 
-        const gap = 145;                  
-        const iconTargetScale = 0.20;     
+        const startY = headerHeight + 50;
+        const gap = 145;
+        const iconTargetScale = 0.20;
 
         unlockedArray.forEach((charName, index) => {
             const xPos = paddingX + (index * gap);
@@ -412,16 +390,16 @@ export class HubLabsScene extends Scene {
             const glow = this.add.graphics();
             glow.fillStyle(0xffffff, 0.3);
             glow.fillCircle(xPos, startY, 35);
-            glow.setDepth(5); 
+            glow.setDepth(5);
 
             const icon = this.add.image(xPos, startY, imgKey);
             icon.setDepth(6);
-            icon.setScale(0); 
+            icon.setScale(0);
 
             icon.setInteractive({ useHandCursor: true });
 
             icon.on('pointerdown', () => {
-                if (!this.isPopupOpen) { 
+                if (!this.isPopupOpen) {
                     this.scene.start('AlbumScene');
                 }
             });
@@ -435,7 +413,7 @@ export class HubLabsScene extends Scene {
 
             this.tweens.add({
                 targets: [icon, glow],
-                scale: { from: 0, to: 1 }, 
+                scale: { from: 0, to: 1 },
                 duration: 500,
                 delay: index * 150,
                 ease: 'Back.easeOut',
@@ -455,7 +433,7 @@ export class HubLabsScene extends Scene {
 
         const headerHeight = height * 0.15;
         const startY = headerHeight + 20;
-        const paddingRight = 40; 
+        const paddingRight = 40;
 
         const msgText = this.add.text(0, 0, 'Colecione os Ícones dos\nCientistas históricos!', {
             fontFamily: 'Fredoka',
@@ -463,7 +441,7 @@ export class HubLabsScene extends Scene {
             color: '#3d3d3d',
             align: 'right',
             fontStyle: 'bold'
-        }).setOrigin(1, 0); 
+        }).setOrigin(1, 0);
 
         msgText.setPosition(width - paddingRight - 15, startY + 15);
 
@@ -473,9 +451,9 @@ export class HubLabsScene extends Scene {
         const boxY = startY;
 
         const bg = this.add.graphics();
-        bg.fillStyle(0xffffff, 0.85); 
+        bg.fillStyle(0xffffff, 0.85);
         bg.fillRoundedRect(boxX, boxY, boxWidth, boxHeight, 12);
-        bg.lineStyle(3, 0x87ceeb);    
+        bg.lineStyle(3, 0x87ceeb);
         bg.strokeRoundedRect(boxX, boxY, boxWidth, boxHeight, 12);
 
         const containerBox = this.add.container(0, -15, [bg, msgText]);
@@ -487,7 +465,7 @@ export class HubLabsScene extends Scene {
             y: 0,
             duration: 800,
             ease: 'Power2',
-            delay: 300 
+            delay: 300
         });
     }
 }

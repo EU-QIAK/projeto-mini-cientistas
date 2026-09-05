@@ -143,23 +143,42 @@ export class HubLabsQuimica extends Scene {
             // Pausa o laboratório (animações do fundo, etc)
             this.scene.pause();
 
-            // Lança a cena de diálogo da Química
+            // 1º DIÁLOGO: INTRODUÇÃO DA MARIE
             this.scene.launch('DialogueScene', {
                 script: scriptIntro,
                 parentScene: 'HubLabsQuimica',
                 onComplete: () => {
-                    console.log("Diálogo da Marie acabou! Partiu jogo!");
-
-                    // 1. Fecha a cena de diálogo atual
+                    console.log("Diálogo 1 (Intro) acabou! Fechando e preparando Apresentação...");
                     this.scene.stop('DialogueScene');
 
-                    // 2. Dá um pequeno tempo e já lança o minigame direto (pois a Química só tem 1 arquivo de diálogo no início)
+                    // Tempo para o Phaser limpar a cena antes de abrir o próximo diálogo
                     this.time.delayedCall(200, () => {
-                        this.scene.stop('HubLabsQuimica');
-                        // Garante que a UI de química continue no minigame
-                        this.scene.launch('UIQuimica'); 
-                        this.scene.start('QuimicaMinigame');
-                    }); 
+                        const scriptApresentacao = this.cache.json.get('quimica-apresentacao');
+
+                        if (!scriptApresentacao) {
+                            console.error("ERRO: O arquivo quimica-apresentacao.json não foi encontrado!");
+                            // Fallback caso esqueça de criar o JSON, vai direto pro jogo
+                            this.scene.stop('HubLabsQuimica');
+                            this.scene.launch('UIQuimica');
+                            this.scene.start('QuimicaMinigame');
+                            return;
+                        }
+
+                        console.log("Iniciando Diálogo 2 (Apresentação)...");
+
+                        // 2º DIÁLOGO: EXPLICAÇÃO DO MINIGAME
+                        this.scene.launch('DialogueScene', {
+                            script: scriptApresentacao,
+                            parentScene: 'HubLabsQuimica',
+                            onComplete: () => {
+                                console.log("Apresentação acabou! Partiu minigame!");
+                                this.scene.stop('DialogueScene');
+                                this.scene.stop('HubLabsQuimica');
+                                this.scene.launch('UIQuimica'); 
+                                this.scene.start('QuimicaMinigame');
+                            }
+                        });
+                    });
                 }
             });
         });

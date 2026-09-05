@@ -23,7 +23,8 @@ import { AlbumScene } from './scenes/AlbumScene';
 //Quimica//
 import { HubLabsQuimica } from './scenes/HubLabsQuimica';
 import { UIQuimica } from './scenes/overlays/UIQuimica';
-
+import { QuimicaMinigame } from './scenes/games/QuimicaMinigame';
+import { GameOverQuimica } from './scenes/GameOverQuimica';
 
 
 //  Find out more information about the Game Config at:
@@ -66,6 +67,8 @@ const config: Phaser.Types.Core.GameConfig = {
         OdontologiaMinigame,
         GameOverOdonto,
         HubLabsQuimica,
+        QuimicaMinigame,
+        GameOverQuimica,
         UIQuimica,
         DialogueScene
     ]

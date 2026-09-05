@@ -1,0 +1,44 @@
+{
+    "actors": {
+        "left": {
+            "name": "Júlia",
+            "texture": "characters/julia/julia-portrait.png"
+        },
+        "right": {
+            "name": "Marie Curie",
+            "texture": "characters/Marie/Marie-normal.png"
+        }
+    },
+    "nodes": {
+        "start": {
+            "speaker": "right",
+            "changeTexture": "characters/Marie/Marie-normal.png",
+            "text": "Muito bem, preste atenção! Vários átomos com as letras H (Hidrogênio), O (Oxigênio) e C (Carbono) vão começar a flutuar pela tela.",
+            "next": "explicacao_1"
+        },
+        "explicacao_1": {
+            "speaker": "right",
+            "changeTexture": "characters/Marie/Marie-feliz.png",
+            "text": "Sua missão é clicar nos átomos certos para preencher os espaços vazios e montar a molécula que estiver escrita no alvo.",
+            "next": "reacao_julia"
+        },
+        "reacao_julia": {
+            "speaker": "left",
+            "changeTexture": "characters/julia/julia-feliz.png",
+            "text": "Ah, entendi! Então se o alvo for a Água, eu tenho que capturar dois Hidrogênios e um Oxigênio para formar H₂O!",
+            "next": "explicacao_2"
+        },
+        "explicacao_2": {
+            "speaker": "right",
+            "changeTexture": "characters/Marie/Marie-feliz.png",
+            "text": "Isso mesmo! E para o Gás Carbônico (CO₂), você precisará de um Carbono e dois Oxigênios. Não se preocupe com a ordem em que clicar, os átomos já sabem seus devidos lugares!",
+            "next": "instrucao_final"
+        },
+        "instrucao_final": {
+            "speaker": "right",
+            "changeTexture": "characters/Marie/Marie-normal.png",
+            "text": "Fique de olho no cronômetro lá em cima e tente montar o máximo de moléculas que conseguir antes do tempo acabar. Boa sorte no experimento!",
+            "next": "end"
+        }
+    }
+}

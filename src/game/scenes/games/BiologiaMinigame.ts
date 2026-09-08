@@ -78,7 +78,7 @@ export class BiologiaMinigame extends Scene {
         // --- INICIA A INTERFACE ---
         this.createDropZones(width);
         this.createInfoPanel(width);
-        this.createTimerBar(width); // Nova função
+        this.createTimerBar(width);
 
         for (let i = 0; i < 4; i++) {
             this.spawnSingleMicrobe(width);
@@ -101,7 +101,6 @@ export class BiologiaMinigame extends Scene {
         });
     }
 
-    // --- NOVA FUNÇÃO: DESENHA A BARRA DE TEMPO ---
     // --- DESENHA A BARRA DE TEMPO NA PARTE INFERIOR ---
     private createTimerBar(width: number) {
         const barHeight = 20;
@@ -137,8 +136,9 @@ export class BiologiaMinigame extends Scene {
         this.timerBarFill = this.add.graphics();
         this.drawTimerFill(innerBarX, innerBarY, this.timerBarWidth, barHeight, 0x28a745);
 
-        // Ícone/Texto "Tempo" (Ampulheta) dentro do painel
-        this.add.text(panelX + 20, panelY + (panelHeight / 2), '⏳', { fontSize: '24px' }).setOrigin(0.5);
+        // Ícone de Tempo (Ampulheta) da nossa biblioteca
+        const timeIcon = this.add.image(panelX + 22, panelY + (panelHeight / 2), 'Timer').setOrigin(0.5);
+        timeIcon.setDisplaySize(28, 28);
     }
 
     private drawTimerFill(x: number, y: number, w: number, h: number, color: number) {
@@ -149,7 +149,6 @@ export class BiologiaMinigame extends Scene {
         }
     }
 
-    // --- ATUALIZAÇÃO DA BARRA SUAVE ---
     // --- ATUALIZAÇÃO DA BARRA SUAVE NA PARTE INFERIOR ---
     private updateTimer() {
         if (this.timeLeft > 0) {
@@ -234,20 +233,25 @@ export class BiologiaMinigame extends Scene {
             fontFamily: 'Fredoka', fontSize: '26px', color: '#3d3d3d', align: 'center', wordWrap: { width: panelWidth * 0.9 }
         }).setOrigin(0.5);
 
-        // --- SISTEMA DE RECORDE EM TEMPO REAL ---
-        // Busca o recorde salvo no navegador
+        // --- SISTEMA DE RECORDE EM TEMPO REAL (COM ÍCONES) ---
         const recordeAtual = parseInt(localStorage.getItem('biologiaRecorde') || '0');
 
         const scoreX = width * 0.05; // 5% da borda esquerda
         const scoreY = this.safeY + 20;
 
-        // Texto de Pontuação (Atual)
-        this.scoreText = this.add.text(scoreX, scoreY, `🏆 Pontos: 0`, {
+        // Ícone e Texto de Pontuação (Atual)
+        const iconTrofeu = this.add.image(scoreX, scoreY, 'Trofeu').setOrigin(0, 0.4);
+        iconTrofeu.setDisplaySize(36, 36);
+
+        this.scoreText = this.add.text(scoreX + 45, scoreY, `Pontos: 0`, {
             fontFamily: 'Fredoka', fontSize: '36px', color: '#e7e7e7', fontStyle: 'bold'
         }).setOrigin(0, 0.4);
 
-        // Novo Texto de Recorde (Abaixo da Pontuação)
-        this.recordeText = this.add.text(scoreX, scoreY + 30, `🌟 Recorde: ${recordeAtual}`, {
+        // Ícone e Texto de Recorde (Abaixo da Pontuação)
+        const iconEstrela = this.add.image(scoreX, scoreY + 30, 'estrela').setOrigin(0, 0.1);
+        iconEstrela.setDisplaySize(28, 28);
+
+        this.recordeText = this.add.text(scoreX + 35, scoreY + 30, `Recorde: ${recordeAtual}`, {
             fontFamily: 'Fredoka', fontSize: '28px', color: '#ffd700', fontStyle: 'bold' // Dourado!
         }).setOrigin(0, 0.1);
     }
@@ -262,11 +266,8 @@ export class BiologiaMinigame extends Scene {
 
     // --- FUNÇÃO QUE GERA UM ÚNICO MICRORGANISMO ---
     private spawnSingleMicrobe(width: number) {
-        // Pega um dado aleatório da lista
         const data = Phaser.Utils.Array.GetRandom(this.microbesData);
 
-        // MUDE AQUI: Aumentei de 0.12 para 0.22 (22% da altura da tela livre)
-        // Se ainda achar pequeno, mude para 0.25 ou 0.30!
         const targetHeight = this.safeHeight * 0.22;
 
         const startX = Phaser.Math.Between(width * 0.4, width * 0.6);
@@ -274,7 +275,6 @@ export class BiologiaMinigame extends Scene {
 
         const microbe = this.add.image(startX, startY, data.texture).setInteractive({ cursor: 'pointer' });
 
-        // Começa pequenininho e dá um "Pop!" para aparecer na tela com o novo tamanho
         const scaleRatio = targetHeight / microbe.height;
         microbe.setScale(0);
         this.tweens.add({ targets: microbe, scale: scaleRatio, duration: 300, ease: 'Back.easeOut' });
@@ -286,17 +286,16 @@ export class BiologiaMinigame extends Scene {
 
         this.input.setDraggable(microbe);
 
-        // Movimento de respiração (agora com um pouco mais de movimento para combinar com o tamanho)
+        // Movimento de respiração
         const floatTween = this.tweens.add({
             targets: microbe,
-            y: startY + Phaser.Math.Between(-20, 20), // Aumentei o pulo aqui também
+            y: startY + Phaser.Math.Between(-20, 20),
             duration: Phaser.Math.Between(1500, 2500),
             yoyo: true,
             repeat: -1,
             ease: 'Sine.easeInOut'
         });
 
-        // Salva o tween no objeto para podermos pará-lo depois se precisarmos
         microbe.setData('floatTween', floatTween);
 
         microbe.on('pointerdown', () => {
@@ -319,7 +318,6 @@ export class BiologiaMinigame extends Scene {
             gameObject.y = dragY;
             gameObject.setDepth(100);
 
-            // Pausa a flutuação enquanto segura
             const tween = gameObject.getData('floatTween');
             if (tween) tween.pause();
         });
@@ -346,8 +344,7 @@ export class BiologiaMinigame extends Scene {
         microbe.disableInteractive();
         microbe.clearTint();
 
-        // --- NOVO: ANIMAÇÃO DE ACERTO ---
-        // A bactéria vai para a caixa, encolhe até sumir e é deletada!
+        // --- ANIMAÇÃO DE ACERTO ---
         this.tweens.add({
             targets: microbe,
             x: zone.x + Phaser.Math.Between(-30, 30),
@@ -357,9 +354,8 @@ export class BiologiaMinigame extends Scene {
             duration: 400,
             ease: 'Back.easeIn',
             onComplete: () => {
-                microbe.destroy(); // Limpa da memória
+                microbe.destroy();
 
-                // SPAM! Gera uma nova bactéria no meio para continuar o jogo
                 if (this.timeLeft > 0) {
                     this.spawnSingleMicrobe(this.scale.width);
                 }
@@ -369,10 +365,9 @@ export class BiologiaMinigame extends Scene {
         this.drawInfoBox(0xffffff, 0x87ceeb);
         this.infoText.setText('Muito bem! +10 Pontos!');
 
-        this.score += 10; // Dá 10 pontos por acerto
-        this.scoreText.setText(`🏆 Pontos: ${this.score}`);
+        this.score += 10;
+        this.scoreText.setText(`Pontos: ${this.score}`); // Sem Emoji
 
-        // Efeito de "Pulo" no texto de pontuação para dar um feedback legal
         this.tweens.add({ targets: this.scoreText, scale: 1.2, yoyo: true, duration: 150 });
     }
 
@@ -391,16 +386,13 @@ export class BiologiaMinigame extends Scene {
             ease: 'Power2',
             onComplete: () => {
                 const tween = microbe.getData('floatTween');
-                if (tween) tween.resume(); // Volta a flutuar
+                if (tween) tween.resume();
             }
         });
     }
 
     private endGame() {
         this.gameTimer.remove();
-
-        // APAGUEI A LINHA: this.input.enabled = false; 
-        // O input precisa continuar ligado para os botões do popup funcionarem!
 
         // --- SISTEMA DE RECORDE (Local Storage) ---
         let recordeAtual = parseInt(localStorage.getItem('biologiaRecorde') || '0');
@@ -414,41 +406,65 @@ export class BiologiaMinigame extends Scene {
 
         const { width, height } = this.scale;
 
-        // --- A MÁGICA ESTÁ AQUI: O BLOQUEADOR DE CLIQUES ---
+        // --- O BLOQUEADOR DE CLIQUES ---
         const overlay = this.add.graphics();
         overlay.fillStyle(0x000000, 0.7);
         overlay.fillRect(0, 0, width, height);
         overlay.setDepth(200);
 
-        // Criamos uma zona invisível do tamanho da tela inteira que VAI comer os cliques
         const blockerZone = this.add.zone(width / 2, height / 2, width, height).setInteractive();
         blockerZone.setDepth(200);
-        // Isso impede que qualquer clique vaze para as bactérias ou caixas que ficaram atrás
         blockerZone.on('pointerdown', (pointer: Phaser.Input.Pointer, localX: number, localY: number, event: Phaser.Types.Input.EventData) => {
             event.stopPropagation();
         });
 
         const popup = this.add.container(width / 2, height / 2);
-        popup.setDepth(201); // O popup fica na frente do blockerZone (201 > 200)
+        popup.setDepth(201); 
         const bgWidth = width * 0.55;
-        const bgHeight = height * 0.55; // Aumentei um pouco para caber os dois botões
+        const bgHeight = height * 0.55; 
+        
         const bg = this.add.graphics();
         bg.fillStyle(0xffffff, 1);
         bg.fillRoundedRect(-bgWidth / 2, -bgHeight / 2, bgWidth, bgHeight, 20);
-        bg.lineStyle(6, bateuRecorde ? 0xffc107 : 0x87ceeb); // Borda muda se bater recorde
+        bg.lineStyle(6, bateuRecorde ? 0xffc107 : 0x87ceeb); 
         bg.strokeRoundedRect(-bgWidth / 2, -bgHeight / 2, bgWidth, bgHeight, 20);
 
-        const titleText = bateuRecorde ? '🎉 NOVO RECORDE! 🎉' : 'TEMPO ESGOTADO!';
+        // --- TÍTULO ---
+        const titleText = bateuRecorde ? 'NOVO RECORDE!' : 'TEMPO ESGOTADO!';
         const titleColor = bateuRecorde ? '#ffc107' : '#3d3d3d';
 
         const title = this.add.text(0, -bgHeight * 0.35, titleText, {
             fontFamily: 'Fredoka', fontSize: '36px', color: titleColor, fontStyle: 'bold'
         }).setOrigin(0.5);
 
-        const scoreText = this.add.text(0, -bgHeight * 0.05,
-            `Você classificou 🌟 ${this.score / 10} microrganismos 🌟\n\nPontuação Atual: ${this.score}\n🏆 Recorde: ${recordeAtual}`, {
+        const elementsToAdd: any[] = [bg, title];
+
+        // Se bater recorde, coloca estrelas no título!
+        if (bateuRecorde) {
+            const starL = this.add.image(-title.width / 2 - 30, -bgHeight * 0.35, 'estrela').setDisplaySize(36, 36);
+            const starR = this.add.image(title.width / 2 + 30, -bgHeight * 0.35, 'estrela').setDisplaySize(36, 36);
+            elementsToAdd.push(starL, starR);
+        }
+
+        // --- TEXTOS SEPARADOS (Com ícones ao lado) ---
+        const scoreMsg = this.add.text(0, -bgHeight * 0.12, `Você classificou ${this.score / 10} microrganismos`, {
             fontFamily: 'Fredoka', fontSize: '26px', color: '#3d3d3d', align: 'center'
         }).setOrigin(0.5);
+
+        const starMLeft = this.add.image(-scoreMsg.width / 2 - 25, -bgHeight * 0.12, 'estrela').setDisplaySize(26, 26);
+        const starMRight = this.add.image(scoreMsg.width / 2 + 25, -bgHeight * 0.12, 'estrela').setDisplaySize(26, 26);
+
+        const currentScoreText = this.add.text(0, -bgHeight * 0.02, `Pontuação Atual: ${this.score}`, {
+            fontFamily: 'Fredoka', fontSize: '26px', color: '#3d3d3d', align: 'center'
+        }).setOrigin(0.5);
+
+        const recText = this.add.text(20, bgHeight * 0.08, `Recorde: ${recordeAtual}`, {
+            fontFamily: 'Fredoka', fontSize: '26px', color: '#3d3d3d', align: 'center', fontStyle: 'bold'
+        }).setOrigin(0.5);
+
+        const trophyPopup = this.add.image(-recText.width / 2 - 15, bgHeight * 0.08, 'Trofeu').setDisplaySize(28, 28);
+
+        elementsToAdd.push(scoreMsg, starMLeft, starMRight, currentScoreText, recText, trophyPopup);
 
         // --- BOTÃO 1: TENTAR NOVAMENTE ---
         const btnRetryW = 240;
@@ -456,7 +472,7 @@ export class BiologiaMinigame extends Scene {
         const btnRetryY = bgHeight * 0.22;
 
         const btnRetryBg = this.add.graphics();
-        btnRetryBg.fillStyle(0x87ceeb, 1); // Azul claro
+        btnRetryBg.fillStyle(0x87ceeb, 1); 
         btnRetryBg.fillRoundedRect(-btnRetryW / 2, btnRetryY - btnRetryH / 2, btnRetryW, btnRetryH, 25);
 
         const btnRetryText = this.add.text(0, btnRetryY, 'TENTAR NOVAMENTE', {
@@ -469,16 +485,13 @@ export class BiologiaMinigame extends Scene {
         btnRetryZone.on('pointerout', () => { btnRetryBg.fillStyle(0x87ceeb, 1).fillRoundedRect(-btnRetryW / 2, btnRetryY - btnRetryH / 2, btnRetryW, btnRetryH, 25); });
 
         btnRetryZone.on('pointerdown', () => {
-            // 1. Reativa a leitura de mouse/toque que tínhamos desligado
             this.input.enabled = true;
-
-            // 2. Remove o popup da tela (opcional, mas bom pra evitar lixo visual)
             overlay.destroy();
             popup.destroy();
-
-            // 3. A Mágica: Recomeça a cena do zero (vai rodar o init() e create() de novo)
             this.scene.restart();
         });
+
+        elementsToAdd.push(btnRetryBg, btnRetryText, btnRetryZone);
 
         // --- BOTÃO 2: CONTINUAR ---
         const btnContW = 240;
@@ -486,7 +499,7 @@ export class BiologiaMinigame extends Scene {
         const btnContY = bgHeight * 0.38;
 
         const btnContBg = this.add.graphics();
-        btnContBg.fillStyle(0xff69b4, 1); // Rosa
+        btnContBg.fillStyle(0xff69b4, 1); 
         btnContBg.fillRoundedRect(-btnContW / 2, btnContY - btnContH / 2, btnContW, btnContH, 25);
 
         const btnContText = this.add.text(0, btnContY, ' CONTINUAR', {
@@ -499,19 +512,15 @@ export class BiologiaMinigame extends Scene {
         btnContZone.on('pointerout', () => { btnContBg.fillStyle(0xff69b4, 1).fillRoundedRect(-btnContW / 2, btnContY - btnContH / 2, btnContW, btnContH, 25); });
 
         btnContZone.on('pointerdown', () => {
-            // 1. Para a UI do laboratório de Biologia que estava rodando em paralelo
             this.scene.stop('UIBiologia');
-            
-            // 2. Lança a sua UI padrão novamente
             this.scene.launch('UIScene');
-
-            // 3. Vai para a cena de Game Over e encerra ESTA cena de Biologia
             this.scene.start('GameOverBio', { score: this.score });
         });
 
-        // Adiciona todos os elementos visuais dentro do Container
+        elementsToAdd.push(btnContBg, btnContText, btnContZone);
 
-        popup.add([bg, title, scoreText, btnRetryBg, btnRetryText, btnRetryZone, btnContBg, btnContText, btnContZone]);
+        // Adiciona tudo ao container
+        popup.add(elementsToAdd);
 
         popup.setScale(0);
         this.tweens.add({

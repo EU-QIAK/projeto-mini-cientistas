@@ -124,12 +124,10 @@ export class OdontologiaMinigame extends Scene {
         this.enemiesGroup = this.physics.add.group();
         this.collectiblesGroup = this.physics.add.group();
 
-        // FACILITADO: Aumentamos a pasta inicial para 4
         for (let i = 0; i < 4; i++) {
             this.spawnCollectible();
         }
 
-        // FACILITADO: Começa apenas com 3 bactérias em vez de 6
         for (let i = 0; i < 3; i++) {
             this.spawnEnemy();
         }
@@ -138,21 +136,29 @@ export class OdontologiaMinigame extends Scene {
         this.physics.add.collider(this.player, this.enemiesGroup, this.hitEnemy, undefined, this);
 
         // ==========================================
-        // 6. INTERFACE (PONTUAÇÃO + RECORDE)
+        // 6. INTERFACE (PONTUAÇÃO + RECORDE COM ÍCONES)
         // ==========================================
         let recordeAtual = parseInt(localStorage.getItem('odontoRecorde') || '0');
 
         const scoreBg = this.add.graphics();
         scoreBg.fillStyle(0xffffff, 0.7);
-        scoreBg.fillRoundedRect(20, this.safeY + 20, 220, 85, 10);
+        scoreBg.fillRoundedRect(20, this.safeY + 20, 240, 85, 10);
         scoreBg.setDepth(20); 
 
-        this.scoreText = this.add.text(35, this.safeY + 28, `Pontos: 0`, {
+        // Ícone e Texto de Pontos
+        const iconTrofeu = this.add.image(35, this.safeY + 43, 'Trofeu').setOrigin(0, 0.5);
+        iconTrofeu.setDisplaySize(30, 30).setDepth(20);
+        
+        this.scoreText = this.add.text(75, this.safeY + 28, `Pontos: 0`, {
             fontFamily: 'Fredoka', fontSize: '30px', color: '#3d3d3d', fontStyle: 'bold'
         });
         this.scoreText.setDepth(20);
 
-        this.recordText = this.add.text(35, this.safeY + 68, `🏆 Recorde: ${recordeAtual}`, {
+        // Ícone e Texto de Recorde
+        const iconEstrela = this.add.image(35, this.safeY + 80, 'estrela').setOrigin(0, 0.5);
+        iconEstrela.setDisplaySize(22, 22).setDepth(20);
+
+        this.recordText = this.add.text(70, this.safeY + 68, `Recorde: ${recordeAtual}`, {
             fontFamily: 'Fredoka', fontSize: '22px', color: '#ffb300', fontStyle: 'bold'
         });
         this.recordText.setDepth(20);
@@ -208,7 +214,6 @@ export class OdontologiaMinigame extends Scene {
             const bacteria = bactObj as Physics.Arcade.Sprite;
             const distanceToPlayer = PhaserMath.Distance.Between(bacteria.x, bacteria.y, this.player.x, this.player.y);
 
-            // FACILITADO: Reduzido o raio de perseguição de 250 para 150
             if (distanceToPlayer < 150) {
                 const chaseSpeed = bacteria.getData('speed') || 80;
                 this.physics.moveToObject(bacteria, this.player, chaseSpeed);
@@ -275,7 +280,6 @@ export class OdontologiaMinigame extends Scene {
         if (vy === 0) vy = 40;
         bacteria.setVelocity(vx, vy);
 
-        // FACILITADO: Velocidade aleatória bem menor (entre 50 e 100 em vez de 90 e 160)
         bacteria.setData('speed', PhaserMath.Between(50, 100));
     }
 
@@ -292,7 +296,6 @@ export class OdontologiaMinigame extends Scene {
 
         this.spawnCollectible();
 
-        // FACILITADO: Adiciona uma nova bactéria só a cada 15 pontos (antes era 10)
         if (this.score > 0 && this.score % 15 === 0) {
             this.spawnEnemy();
         }
@@ -323,7 +326,7 @@ export class OdontologiaMinigame extends Scene {
     }
 
     // ==========================================
-    // --- SISTEMA DA BARRA DE TEMPO ---
+    // --- SISTEMA DA BARRA DE TEMPO (COM ÍCONE) ---
     // ==========================================
 
     private createTimerBar(width: number) {
@@ -357,8 +360,10 @@ export class OdontologiaMinigame extends Scene {
         this.drawTimerFill(innerBarX, innerBarY, this.timerBarWidth, barHeight, 0x28a745);
         this.timerBarFill.setDepth(20);
 
-        const iconText = this.add.text(panelX + 20, panelY + (panelHeight / 2), '⏳', { fontSize: '24px' }).setOrigin(0.5);
-        iconText.setDepth(20);
+        // Substituído o emoji de ampulheta pelo ícone
+        const timeIcon = this.add.image(panelX + 22, panelY + (panelHeight / 2), 'Timer').setOrigin(0.5);
+        timeIcon.setDisplaySize(28, 28);
+        timeIcon.setDepth(20);
     }
 
     private drawTimerFill(x: number, y: number, w: number, h: number, color: number) {
@@ -405,7 +410,7 @@ export class OdontologiaMinigame extends Scene {
     }
 
     // ==========================================
-    // --- POPUP DE RESULTADO ---
+    // --- POPUP DE RESULTADO (COM ÍCONES) ---
     // ==========================================
 
     private showResultPopup(isWin: boolean) {
@@ -443,25 +448,48 @@ export class OdontologiaMinigame extends Scene {
         bg.lineStyle(6, bateuRecorde ? 0xffc107 : (isWin ? 0x28a745 : 0xdc3545));
         bg.strokeRoundedRect(-bgWidth / 2, -bgHeight / 2, bgWidth, bgHeight, 20);
 
-        const titleText = bateuRecorde ? '🎉 NOVO RECORDE! 🎉' : (isWin ? 'DENTE SALVO! 🦷✨' : 'AI, QUE DOR! 🦠');
+        // TÍTULO SEM EMOJI
+        const titleText = bateuRecorde ? 'NOVO RECORDE!' : (isWin ? 'DENTE SALVO!' : 'AI, QUE DOR!');
         const titleColor = bateuRecorde ? '#ffc107' : (isWin ? '#28a745' : '#dc3545');
 
         const title = this.add.text(0, -bgHeight * 0.35, titleText, {
             fontFamily: 'Fredoka', fontSize: '36px', color: titleColor, fontStyle: 'bold'
         }).setOrigin(0.5);
 
-        const scoreMsg = this.add.text(0, -bgHeight * 0.05,
-            `Você coletou:\n🌟 ${this.score} Pastas de Dente 🌟\n\n🏆 Recorde: ${recordeAtual}`, {
+        const elementsToAdd: any[] = [bg, title];
+
+        // Adiciona estrelas ao redor do título apenas se bateu recorde
+        if (bateuRecorde) {
+            const starL = this.add.image(-title.width / 2 - 30, -bgHeight * 0.35, 'estrela').setDisplaySize(36, 36);
+            const starR = this.add.image(title.width / 2 + 30, -bgHeight * 0.35, 'estrela').setDisplaySize(36, 36);
+            elementsToAdd.push(starL, starR);
+        }
+
+        // TEXTOS DE PONTUAÇÃO E RECORDE (Separados e com Ícones)
+        const scoreMsg = this.add.text(0, -bgHeight * 0.12, 'Você coletou:', {
             fontFamily: 'Fredoka', fontSize: '26px', color: '#3d3d3d', align: 'center'
         }).setOrigin(0.5);
 
-        // --- ARRAY DE ELEMENTOS DO POPUP ---
-        const elementsToAdd: any[] = [bg, title, scoreMsg];
+        const scoreValue = this.add.text(0, -bgHeight * 0.02, `${this.score} Pastas de Dente`, {
+            fontFamily: 'Fredoka', fontSize: '26px', color: '#3d3d3d', align: 'center', fontStyle: 'bold'
+        }).setOrigin(0.5);
+
+        // Estrelas ladelando o valor da pontuação
+        const starMLeft = this.add.image(-scoreValue.width / 2 - 25, -bgHeight * 0.02, 'estrela').setDisplaySize(26, 26);
+        const starMRight = this.add.image(scoreValue.width / 2 + 25, -bgHeight * 0.02, 'estrela').setDisplaySize(26, 26);
+
+        const recText = this.add.text(20, bgHeight * 0.08, `Recorde: ${recordeAtual}`, {
+            fontFamily: 'Fredoka', fontSize: '26px', color: '#3d3d3d', align: 'center', fontStyle: 'bold'
+        }).setOrigin(0.5);
+
+        // Troféu ao lado do texto de recorde
+        const trophyPopup = this.add.image(-recText.width / 2 - 15, bgHeight * 0.08, 'Trofeu').setDisplaySize(28, 28);
+
+        elementsToAdd.push(scoreMsg, scoreValue, starMLeft, starMRight, recText, trophyPopup);
 
         // --- BOTÃO 1: TENTAR NOVAMENTE ---
         const btnRetryW = 240;
         const btnRetryH = 50;
-        // Centraliza o botão se for o único (derrota), senão joga mais pra cima
         const btnRetryY = isWin ? bgHeight * 0.22 : bgHeight * 0.30;
 
         const btnRetryBg = this.add.graphics();

@@ -53,7 +53,6 @@ export class QuimicaMinigame extends Scene {
         this.safeY = topUI;
 
         // --- SISTEMA DE RECORDE EM TEMPO REAL ---
-        // Busca o recorde salvo no navegador de forma idêntica ao minigame de Biologia
         const recordeAtual = parseInt(localStorage.getItem('quimicaRecorde') || '0');
         const scoreX = width * 0.05; 
         const scoreY = this.safeY + 20;
@@ -64,11 +63,19 @@ export class QuimicaMinigame extends Scene {
         scoreBg.lineStyle(3, 0x87ceeb);
         scoreBg.strokeRoundedRect(scoreX - 20, scoreY - 20, 280, 110, 15);
 
-        this.scoreText = this.add.text(scoreX, scoreY, `🏆 Pontos: 0`, {
+        // Ícone e Texto de Pontos
+        const iconTrofeu = this.add.image(scoreX - 5, scoreY + 16, 'Trofeu').setOrigin(0, 0.5);
+        iconTrofeu.setDisplaySize(32, 32); // Força para o tamanho exato da fonte (32px)
+        
+        this.scoreText = this.add.text(scoreX + 35, scoreY, `Pontos: 0`, {
             fontFamily: 'Fredoka', fontSize: '32px', color: '#3d3d3d', fontStyle: 'bold'
         }).setOrigin(0, 0);
 
-        this.recordeText = this.add.text(scoreX, scoreY + 45, `🌟 Recorde: ${recordeAtual}`, {
+        // Ícone e Texto de Recorde
+        const iconEstrela = this.add.image(scoreX - 5, scoreY + 58, 'estrela').setOrigin(0, 0.5);
+        iconEstrela.setDisplaySize(24, 24); // Força para o tamanho exato da fonte (24px)
+        
+        this.recordeText = this.add.text(scoreX + 35, scoreY + 45, `Recorde: ${recordeAtual}`, {
             fontFamily: 'Fredoka', fontSize: '24px', color: '#ffb300', fontStyle: 'bold'
         }).setOrigin(0, 0);
 
@@ -195,7 +202,9 @@ export class QuimicaMinigame extends Scene {
         this.timerBarFill = this.add.graphics();
         this.drawTimerFill(innerBarX, innerBarY, this.timerBarWidth, barHeight, 0x28a745);
 
-        this.add.text(panelX + 20, panelY + (panelHeight / 2), '⏳', { fontSize: '24px' }).setOrigin(0.5);
+        // Ícone de Ampulheta
+        const timeIcon = this.add.image(panelX + 22, panelY + (panelHeight / 2), 'Timer').setOrigin(0.5);
+        timeIcon.setDisplaySize(28, 28); // Mantém o tamanho alinhado com a barra
     }
 
     private drawTimerFill(x: number, y: number, w: number, h: number, color: number) {
@@ -335,7 +344,7 @@ export class QuimicaMinigame extends Scene {
 
         if (isCorrect) {
             this.score += 10;
-            this.scoreText.setText(`🏆 Pontos: ${this.score}`);
+            this.scoreText.setText(`Pontos: ${this.score}`); 
             this.tweens.add({ targets: this.scoreText, scale: 1.1, yoyo: true, duration: 150 });
 
             this.collectedAtoms.forEach(a => {
@@ -375,7 +384,7 @@ export class QuimicaMinigame extends Scene {
     }
 
     // ==================================================
-    // FIM DE JOGO E TRANSIÇÃO
+    // FIM DE JOGO E TRANSIÇÃO (COM ÍCONES AJUSTADOS)
     // ==================================================
     private triggerGameOver() {
         this.isGameOver = true;
@@ -386,7 +395,6 @@ export class QuimicaMinigame extends Scene {
             atom.disableInteractive();
         });
 
-        // --- SISTEMA DE RECORDE (Local Storage) IDÊNTICO A BIOLOGIA ---
         let recordeAtual = parseInt(localStorage.getItem('quimicaRecorde') || '0');
         let bateuRecorde = false;
 
@@ -420,18 +428,40 @@ export class QuimicaMinigame extends Scene {
         bg.lineStyle(6, bateuRecorde ? 0xffc107 : 0x87ceeb); 
         bg.strokeRoundedRect(-bgWidth / 2, -bgHeight / 2, bgWidth, bgHeight, 20);
 
-        const titleText = bateuRecorde ? '🎉 NOVO RECORDE! 🎉' : 'TEMPO ESGOTADO!';
+        // TÍTULO
+        const titleText = bateuRecorde ? 'NOVO RECORDE!' : 'TEMPO ESGOTADO!';
         const titleColor = bateuRecorde ? '#ffc107' : '#3d3d3d';
 
         const title = this.add.text(0, -bgHeight * 0.35, titleText, {
             fontFamily: 'Fredoka', fontSize: '36px', color: titleColor, fontStyle: 'bold'
         }).setOrigin(0.5);
 
-        const popupScoreText = this.add.text(0, -bgHeight * 0.05,
-            `Você combinou 🌟 ${this.score / 10} moléculas 🌟\n\nPontuação Atual: ${this.score}\n🏆 Recorde: ${recordeAtual}`, {
+        // Adiciona estrelas ao redor do título se for recorde (Tamanho 36x36 para combinar com a fonte)
+        if (bateuRecorde) {
+            const starLeft = this.add.image(-title.width / 2 - 30, -bgHeight * 0.35, 'estrela').setDisplaySize(36, 36);
+            const starRight = this.add.image(title.width / 2 + 30, -bgHeight * 0.35, 'estrela').setDisplaySize(36, 36);
+            popup.add([starLeft, starRight]);
+        }
+
+        // TEXTOS DE PONTUAÇÃO E RECORDE (Tamanho 26x26)
+        const moleculasText = this.add.text(0, -bgHeight * 0.12, `Você combinou ${this.score / 10} moléculas`, {
             fontFamily: 'Fredoka', fontSize: '26px', color: '#3d3d3d', align: 'center'
         }).setOrigin(0.5);
 
+        const starMLeft = this.add.image(-moleculasText.width / 2 - 25, -bgHeight * 0.12, 'estrela').setDisplaySize(26, 26);
+        const starMRight = this.add.image(moleculasText.width / 2 + 25, -bgHeight * 0.12, 'estrela').setDisplaySize(26, 26);
+
+        const currentScoreText = this.add.text(0, -bgHeight * 0.02, `Pontuação Atual: ${this.score}`, {
+            fontFamily: 'Fredoka', fontSize: '26px', color: '#3d3d3d', align: 'center'
+        }).setOrigin(0.5);
+
+        const recText = this.add.text(20, bgHeight * 0.08, `Recorde: ${recordeAtual}`, {
+            fontFamily: 'Fredoka', fontSize: '26px', color: '#3d3d3d', align: 'center', fontStyle: 'bold'
+        }).setOrigin(0.5);
+
+        const trophyPopup = this.add.image(-recText.width / 2 - 15, bgHeight * 0.08, 'Trofeu').setDisplaySize(28, 28);
+
+        // BOTÕES DE CONTINUAR / TENTAR DE NOVO
         const btnRetryW = 240;
         const btnRetryH = 50;
         const btnRetryY = bgHeight * 0.22;
@@ -477,7 +507,15 @@ export class QuimicaMinigame extends Scene {
             this.scene.start('GameOverQuimica', { score: this.score });
         });
 
-        popup.add([bg, title, popupScoreText, btnRetryBg, btnRetryText, btnRetryZone, btnContBg, btnContText, btnContZone]);
+        // ADICIONA TUDO AO CONTAINER DO POPUP
+        popup.add([
+            bg, title, 
+            moleculasText, starMLeft, starMRight, 
+            currentScoreText, 
+            recText, trophyPopup, 
+            btnRetryBg, btnRetryText, btnRetryZone, 
+            btnContBg, btnContText, btnContZone
+        ]);
 
         popup.setScale(0);
         this.tweens.add({

@@ -75,6 +75,13 @@ export class Preloader extends Scene {
         this.load.image('balao-pensamento', 'ui/balao-pensamento.png');
         this.load.image('seta-esquerda', 'ui/seta-esquerda.png');
         this.load.image('seta-direita', 'ui/seta-direita.png');
+        this.load.image('Trofeu', 'ui/trophy.png');
+        this.load.image('estrela', 'ui/star.png');
+        this.load.image('Timer', 'ui/hourglass.png');
+        //this.load.image('', 'ui/.png');
+
+
+
 
         //icones dos personagens
         this.load.image('Julia-Icone', 'ui/Julia-Icone.png');

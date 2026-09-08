@@ -71,11 +71,22 @@ export class GameOverOdonto extends Scene {
             fontFamily: 'Fredoka', fontSize: `${titleFontSize}px`, color: '#5ca0d3', fontStyle: 'bold'
         }).setOrigin(0.5);
 
-        // Pontuação
-        const scoreFontSize = Math.max(20, boxHeight * 0.06);
-        const scoreLabel = this.add.text(0, scoreY, `Você conseguiu:\n🌟 ${this.finalScore} Pontos!`, {
-            fontFamily: 'Fredoka', fontSize: `${scoreFontSize}px`, color: '#3d3d3d', align: 'center', fontStyle: 'bold'
+        // ==========================================
+        // --- PONTUAÇÃO (COM ÍCONE DE TROFÉU) ---
+        // ==========================================
+        const scoreMsgFontSize = Math.max(16, boxHeight * 0.045);
+        const scoreMsg = this.add.text(0, scoreY - 15, 'Você conseguiu:', {
+            fontFamily: 'Fredoka', fontSize: `${scoreMsgFontSize}px`, color: '#3d3d3d', align: 'center'
         }).setOrigin(0.5);
+
+        const scoreFontSize = Math.max(22, boxHeight * 0.065);
+        const scoreLabel = this.add.text(0, scoreY + 20, `${this.finalScore} Pontos!`, {
+            fontFamily: 'Fredoka', fontSize: `${scoreFontSize}px`, color: '#3d3d3d', fontStyle: 'bold'
+        }).setOrigin(0.5);
+
+        // Posiciona o troféu logo antes do número de pontos
+        const trophyIcon = this.add.image(-scoreLabel.width / 2 - 20, scoreY + 20, 'Trofeu');
+        trophyIcon.setDisplaySize(scoreFontSize, scoreFontSize); // Fica do tamanho exato da fonte!
 
         // Divisória sutil
         const line = this.add.graphics();
@@ -83,11 +94,18 @@ export class GameOverOdonto extends Scene {
         const lineWidth = boxWidth * 0.6;
         line.lineBetween(-lineWidth / 2, lineY, lineWidth / 2, lineY);
 
-        // Título da Recompensa
+        // ==========================================
+        // --- RECOMPENSA (COM ÍCONES DE ESTRELA) ---
+        // ==========================================
         const rewardFontSize = Math.max(16, boxHeight * 0.045);
-        const rewardTitle = this.add.text(0, rewardTitleY, '🌟 Recompensa Desbloqueada 🌟', {
+        const rewardTitle = this.add.text(0, rewardTitleY, 'Recompensa Desbloqueada', {
             fontFamily: 'Fredoka', fontSize: `${rewardFontSize}px`, color: '#ffb300', fontStyle: 'bold'
         }).setOrigin(0.5);
+
+        // Estrelas adornando o título
+        const starSize = rewardFontSize + 4; // Um pouquinho maior que a fonte pra dar destaque
+        const starLeft = this.add.image(-rewardTitle.width / 2 - 20, rewardTitleY, 'estrela').setDisplaySize(starSize, starSize);
+        const starRight = this.add.image(rewardTitle.width / 2 + 20, rewardTitleY, 'estrela').setDisplaySize(starSize, starSize);
 
         // ==========================================
         // --- ÍCONE DO PIERRE (TAMANHO DINÂMICO) ---
@@ -113,7 +131,14 @@ export class GameOverOdonto extends Scene {
         }).setOrigin(0.5);
 
         // Adiciona todos os elementos ao container
-        this.uiContainer.add([boxBg, title, scoreLabel, line, rewardTitle, glow, rewardIcon, continueText]);
+        this.uiContainer.add([
+            boxBg, title, 
+            scoreMsg, scoreLabel, trophyIcon, 
+            line, 
+            rewardTitle, starLeft, starRight, 
+            glow, rewardIcon, 
+            continueText
+        ]);
 
         // --- ANIMAÇÕES ---
         // Faz a caixa pular na tela

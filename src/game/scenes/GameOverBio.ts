@@ -67,11 +67,22 @@ export class GameOverBio extends Scene {
             fontFamily: 'Fredoka', fontSize: `${titleFontSize}px`, color: '#28a745', fontStyle: 'bold'
         }).setOrigin(0.5);
 
-        // Pontuação
-        const scoreFontSize = Math.max(20, boxHeight * 0.06);
-        const scoreLabel = this.add.text(0, scoreY, `Você conseguiu:\n🏆 ${this.finalScore} Pontos!`, {
-            fontFamily: 'Fredoka', fontSize: `${scoreFontSize}px`, color: '#3d3d3d', align: 'center', fontStyle: 'bold'
+        // ==========================================
+        // --- PONTUAÇÃO (COM ÍCONE DE TROFÉU) ---
+        // ==========================================
+        const scoreMsgFontSize = Math.max(16, boxHeight * 0.045);
+        const scoreMsg = this.add.text(0, scoreY - 15, 'Você conseguiu:', {
+            fontFamily: 'Fredoka', fontSize: `${scoreMsgFontSize}px`, color: '#3d3d3d', align: 'center'
         }).setOrigin(0.5);
+
+        const scoreFontSize = Math.max(22, boxHeight * 0.065);
+        const scoreLabel = this.add.text(0, scoreY + 20, `${this.finalScore} Pontos!`, {
+            fontFamily: 'Fredoka', fontSize: `${scoreFontSize}px`, color: '#3d3d3d', fontStyle: 'bold'
+        }).setOrigin(0.5);
+
+        // Posiciona o troféu logo antes do número de pontos
+        const trophyIcon = this.add.image(-scoreLabel.width / 2 - 20, scoreY + 20, 'Trofeu');
+        trophyIcon.setDisplaySize(scoreFontSize, scoreFontSize);
 
         // Divisória sutil (Ocupa 60% da largura da caixa)
         const line = this.add.graphics();
@@ -79,11 +90,18 @@ export class GameOverBio extends Scene {
         const lineWidth = boxWidth * 0.6;
         line.lineBetween(-lineWidth / 2, lineY, lineWidth / 2, lineY);
 
-        // Título da Recompensa
+        // ==========================================
+        // --- RECOMPENSA (COM ÍCONES DE ESTRELA) ---
+        // ==========================================
         const rewardFontSize = Math.max(16, boxHeight * 0.045);
-        const rewardTitle = this.add.text(0, rewardTitleY, '🌟 Recompensa Desbloqueada 🌟', {
+        const rewardTitle = this.add.text(0, rewardTitleY, 'Recompensa Desbloqueada', {
             fontFamily: 'Fredoka', fontSize: `${rewardFontSize}px`, color: '#ffb300', fontStyle: 'bold'
         }).setOrigin(0.5);
+
+        // Estrelas adornando o título
+        const starSize = rewardFontSize + 4;
+        const starLeft = this.add.image(-rewardTitle.width / 2 - 20, rewardTitleY, 'estrela').setDisplaySize(starSize, starSize);
+        const starRight = this.add.image(rewardTitle.width / 2 + 20, rewardTitleY, 'estrela').setDisplaySize(starSize, starSize);
 
         // ==========================================
         // --- ÍCONE DO PASTEUR (TAMANHO DINÂMICO) --
@@ -101,9 +119,7 @@ export class GameOverBio extends Scene {
 
         // 1. Movemos o "eixo" do Graphics para a mesma posição do ícone
         glow.setPosition(0, iconY);
-
         glow.fillStyle(0xffd700, 0.5);
-
         // 2. Agora desenhamos o círculo exatamente no centro (0, 0) desse eixo
         glow.fillCircle(0, 0, glowRadius);
 
@@ -114,7 +130,14 @@ export class GameOverBio extends Scene {
         }).setOrigin(0.5);
 
         // Adiciona todos os elementos ao container
-        this.uiContainer.add([boxBg, title, scoreLabel, line, rewardTitle, glow, pasteurIcon, continueText]);
+        this.uiContainer.add([
+            boxBg, title, 
+            scoreMsg, scoreLabel, trophyIcon, 
+            line, 
+            rewardTitle, starLeft, starRight, 
+            glow, pasteurIcon, 
+            continueText
+        ]);
 
         // --- ANIMAÇÕES ---
         // Faz a caixa pular na tela
